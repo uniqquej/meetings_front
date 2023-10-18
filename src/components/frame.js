@@ -5,7 +5,11 @@ const Layout = ({children})=>{
     return (
         <div className="App">
             <div className="header">
-                <h3>Meeting</h3>
+                <h2>MEETING</h2>
+                <div>
+                <button className="my-btn">마이페이지</button>
+                <button className="my-btn">로그아웃</button>
+                </div>
             </div>
             <div className="navi">
                 <ul className="nav flex-column">
@@ -22,6 +26,7 @@ const Layout = ({children})=>{
     )
 }
 
+// category 가져와서 navitem 추가하기
 const NavItem = (probs)=> {
   return (
         <>

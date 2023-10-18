@@ -8,15 +8,16 @@
          "header  header"
          "nav body"
          "footer footer";
-    font-size: calc(10px + 2vmin);
+    font-size: calc(5px + 2vmin);
     color: white;
   }
   .header {
       grid-area : header;
       display: flex;
       margin: 5px 5px;
-      justify-content: center;
+      justify-content: space-between;
       align-items: center;
+      padding: 10px;
   }
   
   .navi {
@@ -27,10 +28,8 @@
   
   .body {
       grid-area : body;
-      border: 1px solid blue;
-      background: #99e9f2;
       display: flex;
-    flex-direction: column;
+      flex-direction: column;
       margin: 5px 5px;
       justify-content: center;
       align-items: center;
@@ -39,7 +38,6 @@
   .footer {
       grid-area : footer;
       border: 1px solid blue;
-      background: #99e9f2;
       display: flex;
       margin: 5px 5px;
       justify-content: center;
@@ -50,9 +48,22 @@
     width: 195px;
     text-align: center;
     padding: 3px;
-    border: 1px solid white;
+    border-bottom: 1px solid white;
   }
 
   .nav-item>a{
     color: white;
+  }
+
+  .my-btn{
+    border-radius: 5px;
+    background-color: inherit;
+    color: white;
+    margin-left: 5px;
+    margin-top: 5px;
+  }
+
+  .my-btn:hover{
+    background-color:white;
+    color: #282c34;
   }

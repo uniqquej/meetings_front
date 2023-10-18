@@ -2,7 +2,7 @@ import './App.css';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Layout from './components/frame';
 import {LoginPage, AuthPage, SignupPage} from './user/api';
-import {PostAPI, PostDetailAPI} from './post/PostAPI';
+import {PostAPI, PostDetailAPI, NewPostAPI} from './post/PostAPI';
 import React from 'react';
 
 function App() {
@@ -27,6 +27,11 @@ function App() {
             <Route path='/post' element={
               <Layout>
                 <PostAPI/>
+              </Layout>
+            }/>
+            <Route path='/new/post' element={
+              <Layout>
+                <NewPostAPI/>
               </Layout>
             }/>
             <Route path='/post/:postId' element={
