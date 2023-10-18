@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 axios.defaults.baseURL = "http://127.0.0.1:8000/"
 
 const LoginPage = ()=>{
+    const navigate = useNavigate();
 
     const [PhoneNumber, setPhoneNumber] = useState("");
     const [Password, setPassword] = useState("");
@@ -28,8 +29,9 @@ const LoginPage = ()=>{
             response => {
                 const accessToken = response.data["access"];
                 localStorage.setItem('access', accessToken)
-    
-                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
+                if(response.status ===200){
+                    navigate("/post");
+                }
             }
         ).catch(error=>{console.log(error)})
     }
@@ -41,6 +43,7 @@ const LoginPage = ()=>{
 
     return(
         <div className="inputBox">
+            <h3>로그인</h3>
             <input className="form-control" type="text" value={PhoneNumber} 
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
             <input className="form-control" type="password" value={Password} 
@@ -99,6 +102,7 @@ const AuthPage = ()=>{
 
     return(
         <div className="inputBox">
+            <h3>인증번호 확인</h3>
             <input className="form-control" type="text" value={PhoneNumber} 
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
             {
@@ -164,6 +168,7 @@ const SignupPage = ()=>{
 
     return (
         <div className="inputBox">
+            <h3>회원가입</h3>
             <input className="form-control" type="text" value={PhoneNumber} 
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
             <input className="form-control" type="text" value={Nickname} 
