@@ -12,12 +12,7 @@ const PostAPI = ()=>{
     const [data, setData] = useState([]);
 
     useEffect(()=>{
-        axios.get('/post/',{
-            headers:{
-                "Authorization" : `Bearer ${accessToken}`
-            }
-        }).then(
-            response => {
+        axios.get('/post/').then(response => {
                 setData([...response.data]);
                 console.log(response)
             }
@@ -25,6 +20,7 @@ const PostAPI = ()=>{
             console.error('error: ', error)
         })
     },[]);
+
     return (
         <>
         <div className="post-list">
@@ -32,7 +28,7 @@ const PostAPI = ()=>{
                 <button onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
             </div>
         {data.map((post) => (
-                <div className="post-item">
+                <div className="post-item" key={post.id}>
                     <b><a href={`/post/${post.id}`}>{post.title}</a></b>
                     { post.author.nickname===""
                     ?(<p> unknown / {moment(post.created_at).format("YYYY-MM-DD")}</p>)
@@ -50,11 +46,7 @@ const PostDetailAPI = ()=>{
     const {postId} = useParams();
 
     useEffect(()=>{
-        axios.get(`/post/${postId}`,{
-            headers:{
-                "Authorization" : `Bearer ${accessToken}`
-            }
-        }).then(
+        axios.get(`/post/${postId}`).then(
             response => {
                 console.log(response)
                 setData(response.data);
@@ -112,9 +104,9 @@ const NewPostAPI = ()=>{
         <div className="post-detail">
             <div>
                 <h3 className="text-center">글 작성하기</h3>
-                <select class="form-select" aria-label="Default select example" onChange={onCategoryHandler} value={category}>
+                <selected class="form-select" aria-label="Default select example" onChange={onCategoryHandler} value={category}>
                     <option selected>Open this select menu</option>
-                </select>   
+                </selected>   
                 <input className="form-control" placeholder="제목" onChange={onTitlHandler} value={title}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>

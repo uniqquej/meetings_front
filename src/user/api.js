@@ -29,6 +29,7 @@ const LoginPage = ()=>{
             response => {
                 const accessToken = response.data["access"];
                 localStorage.setItem('access', accessToken)
+                axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 if(response.status ===200){
                     navigate("/post");
                 }
