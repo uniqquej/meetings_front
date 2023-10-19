@@ -1,5 +1,6 @@
 import "./frame.css";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from "axios";
 
 const Layout = ({children})=>{
     return (
@@ -12,9 +13,7 @@ const Layout = ({children})=>{
                 </div>
             </div>
             <div className="navi">
-                <ul className="nav flex-column">
-                    <NavItem title="공무원 시험" />
-                </ul>
+                <Nav/>
             </div>
             <div className="body">
                 {children}
@@ -26,7 +25,36 @@ const Layout = ({children})=>{
     )
 }
 
-// category 가져와서 navitem 추가하기
+const Nav = ()=>{
+    const [category, setCategory] = useState([]);
+    
+    useEffect(()=>{
+        axios.get('/post/category').then(
+            response =>{
+                console.log('cate',response)
+                setCategory([...response.data]);
+            }).catch(
+                error =>{
+                    console.error(error)
+                }
+            )
+    },[]);
+
+    useEffect(() => {
+        console.log('cate2', category);
+      }, [category]);
+
+    return(
+        <ul className="nav flex-column">
+            {  category.length > 0 &&
+                category.map((category)=>(
+                    <NavItem key={category.id} title={category.category_name}/>
+                ))
+            }
+        </ul>
+    );
+}
+
 const NavItem = (probs)=> {
   return (
         <>

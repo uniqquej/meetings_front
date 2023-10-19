@@ -8,7 +8,7 @@
          "header  header"
          "nav body"
          "footer footer";
-    font-size: calc(5px + 2vmin);
+    font-size: calc(8px + 1vmin);
     color: white;
   }
   .header {
