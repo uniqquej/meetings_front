@@ -40,10 +40,6 @@ const Nav = ()=>{
             )
     },[]);
 
-    useEffect(() => {
-        console.log('cate2', category);
-      }, [category]);
-
     return(
         <ul className="nav flex-column">
             {  category.length > 0 &&

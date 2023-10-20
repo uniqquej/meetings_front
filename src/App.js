@@ -1,10 +1,11 @@
+import React from 'react';
 import './App.css';
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import Layout from './components/frame';
 import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
-import React from 'react';
+import {GroupList, GroupDetail} from './group/group';
 
 function App() {
   return (
@@ -55,6 +56,16 @@ function App() {
                 <RecruitmentDetailAPI/>
               </Layout>
             }/>
+            <Route path='/group' element={
+              <Layout>
+                <GroupList />
+              </Layout>
+          }/>
+          <Route path='/group/:groupId' element={
+              <Layout>
+                <GroupDetail />
+              </Layout>
+          }/>
         </Routes>  
     </BrowserRouter>
   );

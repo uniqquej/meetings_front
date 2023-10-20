@@ -22,7 +22,6 @@ const PostAPI = ()=>{
     },[]);
 
     return (
-        <>
         <div className="post-list">
             <div>
                 <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
@@ -37,7 +36,6 @@ const PostAPI = ()=>{
                 </div>
         ))}
         </div>
-        </>
     )
 }
 
