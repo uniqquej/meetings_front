@@ -25,7 +25,7 @@ function App() {
                 <SignupPage/>
               </div>
             }/>
-            <Route path='/post' element={
+            <Route path='' element={
               <Layout>
                 <PostAPI/>
               </Layout>

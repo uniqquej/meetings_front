@@ -3,6 +3,7 @@ import {useParams, useNavigate} from "react-router-dom"
 import axios from "axios"
 import moment from "moment";
 import "./post.css"
+import InputBox from "../components/input";
 
 const accessToken = localStorage.getItem("access")
 
@@ -12,11 +13,7 @@ const RecruitmentAPI = ()=>{
     const [data, setData] = useState([]);
 
     useEffect(()=>{
-        axios.get('/post/recruit',{
-            headers:{
-                "Authorization" : `Bearer ${accessToken}`
-            }
-        }).then(
+        axios.get('/post/recruit').then(
             response => {
                 setData([...response.data]);
                 console.log(response)
@@ -29,7 +26,8 @@ const RecruitmentAPI = ()=>{
         <>
         <div className="post-list">
             <div>
-                <button onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
+                <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
+                <button className="my-btn" onClick={()=>{navigate('/post')}}>게시글 보기</button>
             </div>
         {data.map((recruitment) => (
                 <div className="post-item" key={recruitment.id}>
@@ -47,29 +45,78 @@ const RecruitmentAPI = ()=>{
 
 const RecruitmentDetailAPI = ()=>{
     // css 수정
-    const [data, setData] = useState("");
     const {recruitId} = useParams();
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+    const [numberOfRecruits, setNumberOfRecruits] = useState("");
+    const [groupName, setGroupName] = useState("");
+    const [editMode, setEditMode] = useState(false);
+
+    const onTitlHandler = (event) => {
+        setTitle(event.currentTarget.value);
+    }
+    const onContentHandler = (event) => {
+        setContent(event.currentTarget.value);
+    }
+
+    const onNumberOfRecruitsHandler = (event) => {
+        setNumberOfRecruits(event.currentTarget.value);
+    }
+    const onGroupNameHandler = (event) => {
+        setGroupName(event.currentTarget.value);
+    }
+    
 
     useEffect(()=>{
         axios.get(`/post/recruit/${recruitId}`).then(
             response => {
                 console.log(response)
-                setData(response.data);
+                setGroupName(response.data.group.group_name)
+                setNumberOfRecruits(response.data.number_of_recruits)
+                setTitle(response.data.title)
+                setContent(response.data.content)
             }
         ).catch(error=>{
             console.error('error: ', error)
         })
     },[]);
+
+    const editRecruitment = async(number_of_recruits,title,content)=>{
+        const res = await axios.put(`/post/recruit/${recruitId}`, {
+            number_of_recruits : number_of_recruits,
+            title:title,
+            content:content
+        },{
+            headers: {
+                "Authorization":`Bearer ${accessToken}`
+            }
+        })
+        console.log('edit res',res)
+    }
     return (
         <>
         <div className="post-detail">
-            <div>
-                <input className="form-control" value={`모임 이름 :${data.group["group_name"]}`} readonly/>
-                <input className="form-control" value={`모집인원 : ${data.number_of_recruits}`} readonly/>
-                <input className="form-control" value={`제목 : ${data.title}`} readonly/>
-                <textarea className="form-control" value={data.content} readonly/>
-            </div>
-            <button>수정하기</button>
+               { editMode ? (
+                <div>
+                    <InputBox readOnly={false} name="groupInput" value={groupName} labelName="모임 이름" change={onGroupNameHandler}/>
+                    <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" change={onNumberOfRecruitsHandler}/>
+                    <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" change={onTitlHandler}/>
+                    <textarea className="form-control" value={content} onChange={onContentHandler} rows={10}/>
+                    <button className="my-btn" onClick={()=>{
+                        setEditMode(false)
+                        editRecruitment(numberOfRecruits,title,content);
+                        }}>저장하기</button>
+                </div>
+                ):
+                (<div>
+                    <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
+                    <InputBox readOnly={true} name="numberInput" value={numberOfRecruits} labelName="모집 인원"/>
+                    <InputBox readOnly={true} name="titleInput" value={title} labelName="제목"/>
+                    <textarea className="form-control" value={content}  rows={10} readonly/>
+                    <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                </div>
+                )
+                }
         </div>
         </>
     )
@@ -137,5 +184,6 @@ const NewRecruitmentAPI = ()=>{
         </>
     )
 }
+
 
 export {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI};

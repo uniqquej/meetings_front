@@ -25,7 +25,8 @@ const PostAPI = ()=>{
         <>
         <div className="post-list">
             <div>
-                <button onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
+                <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
+                <button className="my-btn" onClick={()=>{navigate('/recruit')}}>모집 공고 보기</button>
             </div>
         {data.map((post) => (
                 <div className="post-item" key={post.id}>
@@ -89,7 +90,7 @@ const NewPostAPI = ()=>{
         {headers:{"Authorization": `Bearer ${accessToken}`}})
 
         if(res.status===201){
-            navigate('/post')
+            navigate('')
         }else{
             alert(res.data)
         }
