@@ -5,12 +5,54 @@ import moment from "moment";
 import "./post.css"
 import InputBox from "../components/input";
 
-const accessToken = localStorage.getItem("access")
+const accessToken = localStorage.getItem("access");
+let userId;
+if (accessToken){
+    userId = JSON.parse(localStorage.getItem('payload')).user_id;
+}
 
 const RecruitmentAPI = ()=>{
     const navigate = useNavigate();
 
     const [data, setData] = useState([]);
+    const [searchWord, setSearchWord] = useState("");
+
+    const searchHandler = (event) => {
+        setSearchWord(event.currentTarget.value);
+    }
+
+    const searchKeyword = async(keyword)=>{
+        let params = {search:keyword}
+        const res = await axios.get('/post/recruit',
+        {params});
+        if (res.status === 200){
+            setData([...res.data]);
+            return (
+                <>
+                <div className="post-list">
+                    <div>
+                        <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
+                        <button className="my-btn" onClick={()=>{navigate('/')}}>게시글 보기</button>
+                        <div className="input-group search-box">
+                            <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
+                            value={searchWord} onChange={searchHandler}/>
+                            <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
+                        </div>
+                    </div>
+                {data.map((recruitment) => (
+                        <div className="post-item" key={recruitment.id}>
+                            <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
+                            { recruitment.author.nickname===""
+                            ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
+                            :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
+                            <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
+                        </div>
+                ))}
+                </div>
+                </>
+            )
+        }
+    }
 
     useEffect(()=>{
         axios.get('/post/recruit').then(
@@ -24,10 +66,15 @@ const RecruitmentAPI = ()=>{
     },[]);
     return (
         <>
-        <div className="post-list">
+        <div className="post-list text-center">
             <div>
                 <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
                 <button className="my-btn" onClick={()=>{navigate('/')}}>게시글 보기</button>
+                <div className="input-group search-box">
+                    <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
+                    value={searchWord} onChange={searchHandler}/>
+                    <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
+                </div>
             </div>
         {data.map((recruitment) => (
                 <div className="post-item" key={recruitment.id}>
@@ -51,6 +98,7 @@ const RecruitmentDetailAPI = ()=>{
     const [numberOfRecruits, setNumberOfRecruits] = useState("");
     const [groupName, setGroupName] = useState("");
     const [editMode, setEditMode] = useState(false);
+    const [author, setAuthor] = useState("");
 
     const onTitlHandler = (event) => {
         setTitle(event.currentTarget.value);
@@ -75,6 +123,7 @@ const RecruitmentDetailAPI = ()=>{
                 setNumberOfRecruits(response.data.number_of_recruits)
                 setTitle(response.data.title)
                 setContent(response.data.content)
+                setAuthor(response.author)
             }
         ).catch(error=>{
             console.error('error: ', error)
@@ -113,7 +162,7 @@ const RecruitmentDetailAPI = ()=>{
                     <InputBox readOnly={true} name="numberInput" value={numberOfRecruits} labelName="모집 인원"/>
                     <InputBox readOnly={true} name="titleInput" value={title} labelName="제목"/>
                     <textarea className="form-control" value={content}  rows={10} readonly/>
-                    <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                    {userId===author?<button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>:""}
                 </div>
                 )
                 }
@@ -175,8 +224,8 @@ const NewRecruitmentAPI = ()=>{
                 <select className="form-select" aria-label="Default select example" onChange={onGroupHandler} value={group}>
                     <option selected>Open this select group</option>
                 </select>
-                <input className="form-control" placeholder="모집 인원" onChange={onNumberOfRecruitsHandler} value={numberOfRecruits}/>
-                <input className="form-control" placeholder="제목" onChange={onTitlHandler} value={title}/>
+                <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" change={onNumberOfRecruitsHandler}/>
+                <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" change={onTitlHandler}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>
             <button className="my-btn" onClick={onWriteRecruitment}>저장하기</button>

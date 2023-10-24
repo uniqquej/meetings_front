@@ -1,15 +1,59 @@
 import React, {useState, useEffect} from "react"
+import qs from "qs"
 import {useParams, useNavigate} from "react-router-dom"
 import axios from "axios"
 import moment from "moment";
 import "./post.css"
 
-const accessToken = localStorage.getItem("access")
+const accessToken = localStorage.getItem("access");
+console.log(accessToken)
+let userId;
+if (accessToken){
+    userId = JSON.parse(localStorage.getItem('payload')).user_id;
+}
+
+axios.defaults.paramsSerializer = params=>{
+    return qs.stringify(params);
+}
 
 const PostAPI = ()=>{
     const navigate = useNavigate();
-
     const [data, setData] = useState([]);
+    const [searchWord, setSearchWord] = useState("");
+
+    const searchHandler = (event) => {
+        setSearchWord(event.currentTarget.value);
+    }
+
+    const searchKeyword = async(keyword)=>{
+        let params = {search:keyword}
+        const res = await axios.get(`/post/`,
+        {params});
+        if (res.status === 200){
+            setData([...res.data]);
+            return (
+                <div className="post-list">
+                    <div className="text-center">
+                        <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
+                        <button className="my-btn" onClick={()=>{navigate('/recruit')}}>모집 공고 보기</button>
+                        <div className="input-group search-box">
+                            <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
+                            value={searchWord} onChange={searchHandler}/>
+                            <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
+                        </div>
+                    </div>
+                {data.map((post) => (
+                        <div className="post-item" key={post.id}>
+                            <b><a href={`/post/${post.id}`}>{post.title}</a></b>
+                            { post.author.nickname===""
+                            ?(<p> unknown / {moment(post.created_at).format("YYYY-MM-DD")}</p>)
+                            :(<p>{post.author.nickname} / {moment(post.created_at).format("YYYY-MM-DD")}</p>)}
+                        </div>
+                ))}
+                </div>
+            )
+        }
+    }
 
     useEffect(()=>{
         axios.get('/post/').then(response => {
@@ -23,9 +67,14 @@ const PostAPI = ()=>{
 
     return (
         <div className="post-list">
-            <div>
+            <div className="text-center">
                 <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
                 <button className="my-btn" onClick={()=>{navigate('/recruit')}}>모집 공고 보기</button>
+                <div className="input-group search-box">
+                    <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
+                    value={searchWord} onChange={searchHandler}/>
+                    <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
+                </div>
             </div>
         {data.map((post) => (
                 <div className="post-item" key={post.id}>
