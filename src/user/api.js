@@ -31,7 +31,7 @@ const LoginPage = ()=>{
                 localStorage.setItem('access', accessToken)
                 axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}`;
                 if(response.status ===200){
-                    navigate("/post");
+                    navigate("/");
                 }
             }
         ).catch(error=>{console.log(error)})

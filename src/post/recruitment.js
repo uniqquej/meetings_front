@@ -27,7 +27,7 @@ const RecruitmentAPI = ()=>{
         <div className="post-list">
             <div>
                 <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
-                <button className="my-btn" onClick={()=>{navigate('/post')}}>게시글 보기</button>
+                <button className="my-btn" onClick={()=>{navigate('/')}}>게시글 보기</button>
             </div>
         {data.map((recruitment) => (
                 <div className="post-item" key={recruitment.id}>

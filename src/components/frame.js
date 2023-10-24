@@ -18,21 +18,23 @@ const Layout = ({children})=>{
             <div className="body">
                 {children}
             </div>
-            <div className="footer">
-                Footer
-            </div>
         </div>
     )
 }
 
 const Nav = ()=>{
-    const [category, setCategory] = useState([]);
+    const [categories, setCategories] = useState([]);
+    let [activeBtn, setActiveBtn] = useState("");
+
+    const toggleBtn = (id)=>{
+        setActiveBtn(id);
+    }
     
     useEffect(()=>{
         axios.get('/post/category').then(
             response =>{
                 console.log('cate',response)
-                setCategory([...response.data]);
+                setCategories([...response.data]);
             }).catch(
                 error =>{
                     console.error(error)
@@ -42,9 +44,14 @@ const Nav = ()=>{
 
     return(
         <ul className="nav flex-column">
-            {  category.length > 0 &&
-                category.map((category)=>(
-                    <NavItem key={category.id} title={category.category_name}/>
+            {  categories.length > 0 &&
+                categories.map((category)=>(
+                    <NavItem
+                    key={category.id}
+                    id={category.id}
+                    title={category.category_name}
+                    active={activeBtn===category.id}
+                    onClick={toggleBtn}/>
                 ))
             }
         </ul>
@@ -52,12 +59,16 @@ const Nav = ()=>{
 }
 
 const NavItem = (probs)=> {
+   const {id, title, active, onClick} = probs;
+
   return (
-        <>
-            <li className="nav-item">
-                <a aria-current="page" href="#">{probs.title}</a>
-            </li>
-        </>
+            <button
+            className={active? "nav-active" : "nav-item"}
+            id={id}
+            onClick={()=> onClick(id)}>
+               {title}
+            </button>
+
   );
 }
 

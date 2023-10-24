@@ -2,12 +2,11 @@
     background-color: #282c34;
     height: 100vh;
     display: grid;
-    grid-template-rows : 50px auto 50px;
+    grid-template-rows : 50px auto;
        grid-template-columns:200px auto;
        grid-template-areas: 
          "header  header"
-         "nav body"
-         "footer footer";
+         "nav body";
     font-size: calc(8px + 1vmin);
     color: white;
   }
@@ -34,21 +33,24 @@
       justify-content: center;
       align-items: center;
   }
-  
-  .footer {
-      grid-area : footer;
-      border: 1px solid blue;
-      display: flex;
-      margin: 5px 5px;
-      justify-content: center;
-      align-items: center;
-  }
-
   .nav-item{
     width: 195px;
     text-align: center;
     padding: 3px;
+    border: none;
     border-bottom: 1px solid white;
+    background-color: #282c34;
+    color: white;
+  }
+
+  .nav-active{
+    width: 195px;
+    text-align: center;
+    padding: 3px;
+    border: none;
+    border-bottom: 1px solid white;
+    background-color: white;
+    color: #282c34;
   }
 
   .nav-item>a{
@@ -65,5 +67,6 @@
 
   .my-btn:hover{
     background-color:white;
+    border: none;
     color: #282c34;
   }
