@@ -1,4 +1,5 @@
 import React, {useState, useEffect} from "react"
+import { useSelector } from "react-redux"
 import qs from "qs"
 import {useParams, useNavigate} from "react-router-dom"
 import axios from "axios"
@@ -6,7 +7,6 @@ import moment from "moment";
 import "./post.css"
 
 const accessToken = localStorage.getItem("access");
-console.log(accessToken)
 let userId;
 if (accessToken){
     userId = JSON.parse(localStorage.getItem('payload')).user_id;
@@ -17,6 +17,8 @@ axios.defaults.paramsSerializer = params=>{
 }
 
 const PostAPI = ()=>{
+    const category = useSelector((state)=> state.selectedCategory);
+
     const navigate = useNavigate();
     const [data, setData] = useState([]);
     const [searchWord, setSearchWord] = useState("");
@@ -26,13 +28,14 @@ const PostAPI = ()=>{
     }
 
     const searchKeyword = async(keyword)=>{
-        let params = {search:keyword}
+        let params = {search:keyword, category:category}
         const res = await axios.get(`/post/`,
         {params});
         if (res.status === 200){
             setData([...res.data]);
             return (
-                <div className="post-list">
+                data.length === 0? <div className="post-list"><div>검색결과 없음</div></div>
+                :(<div className="post-list">
                     <div className="text-center">
                         <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
                         <button className="my-btn" onClick={()=>{navigate('/recruit')}}>모집 공고 보기</button>
@@ -50,20 +53,20 @@ const PostAPI = ()=>{
                             :(<p>{post.author.nickname} / {moment(post.created_at).format("YYYY-MM-DD")}</p>)}
                         </div>
                 ))}
-                </div>
+                </div>)
             )
         }
     }
 
     useEffect(()=>{
-        axios.get('/post/').then(response => {
+        let params = {category:category};
+        axios.get('/post/',{params}).then(response => {
                 setData([...response.data]);
-                console.log(response)
             }
         ).catch(error=>{
             console.error('error: ', error)
         })
-    },[]);
+    },[category]);
 
     return (
         <div className="post-list">
@@ -144,7 +147,7 @@ const NewPostAPI = ()=>{
     }
 
     const onWritePost = ()=>{
-        writePost(category,title,content)
+        writePost(2,title,content)
     }
 
     return (
@@ -152,9 +155,9 @@ const NewPostAPI = ()=>{
         <div className="post-detail">
             <div>
                 <h3 className="text-center">글 작성하기</h3>
-                <selected class="form-select" aria-label="Default select example" onChange={onCategoryHandler} value={category}>
+                {/* <selected className="form-select" aria-label="Default select example" onChange={onCategoryHandler} value={category}>
                     <option selected>Open this select menu</option>
-                </selected>   
+                </selected>    */}
                 <input className="form-control" placeholder="제목" onChange={onTitlHandler} value={title}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>

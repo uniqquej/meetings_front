@@ -1,6 +1,23 @@
 import "./frame.css";
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
+import {Provider, useDispatch } from 'react-redux';
+import { createStore } from 'redux';
+
+const reducer = (currentState, action)=>{
+    if(currentState=== undefined){
+        return{
+            selectedCategory:undefined
+        }
+    }
+    switch (action.type){
+        case 'select_category':
+            return {...currentState, selectedCategory: action.category};
+        default:
+            return currentState;
+    }
+}
+const store = createStore(reducer);
 
 const Layout = ({children})=>{
     return (
@@ -12,12 +29,14 @@ const Layout = ({children})=>{
                 <button className="my-btn">로그아웃</button>
                 </div>
             </div>
+            <Provider store={store}>
             <div className="navi">
                 <Nav/>
             </div>
-            <div className="body">
-                {children}
-            </div>
+                <div className="body">
+                    {children}
+                </div>
+            </Provider>
         </div>
     )
 }
@@ -25,15 +44,16 @@ const Layout = ({children})=>{
 const Nav = ()=>{
     const [categories, setCategories] = useState([]);
     let [activeBtn, setActiveBtn] = useState("");
+    const dispatch = useDispatch();
 
     const toggleBtn = (id)=>{
+        dispatch({type:"select_category", category:id})
         setActiveBtn(id);
     }
     
     useEffect(()=>{
         axios.get('/post/category').then(
             response =>{
-                console.log('cate',response)
                 setCategories([...response.data]);
             }).catch(
                 error =>{
