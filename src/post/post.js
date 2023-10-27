@@ -3,8 +3,10 @@ import { useSelector,useDispatch } from "react-redux"
 import {useParams, useNavigate} from "react-router-dom"
 import axios from "axios"
 import moment from "moment";
+
 import "./post.css"
 import { SelectBox } from "../components/frame";
+import InputBox from "../components/input";
 
 const accessToken = localStorage.getItem("access");
 
@@ -95,26 +97,75 @@ const PostAPI = ()=>{
 
 const PostDetailAPI = ()=>{
     // css 수정
-    const [data, setData] = useState("");
     const {postId} = useParams();
+    const [author, setAuthor] = useState("");
+    const [editMode, setEditMode] = useState(false);
+    const [checkLike, setCheckLike] = useState(false);
+    const [title, setTitle] = useState("");
+    const [content, setContent] = useState("");
+
+    const onTitleHandler = (event)=>{
+        setTitle(event.currentTarget.value);
+    }
+
+    const onContentHandler = (event)=>{
+        setContent(event.currentTarget.value);
+    }
+
+    const editPost = (title, content)=>{
+        axios.put(`/post/${postId}`,{title,content},
+            {headers:{Authorization:`Bearer ${accessToken}`}})
+        .then(response=>{if(response.status ===202){
+            setEditMode(false);
+            alert('수정완료');
+        }})
+    }
 
     useEffect(()=>{
         axios.get(`/post/${postId}`).then(
             response => {
-                console.log(response)
-                setData(response.data);
+                console.log(response);
+                setTitle(response.data.title);
+                setContent(response.data.content);
+                setAuthor(response.data.author.id);
+                if(response.data.likes.includes(userId)){
+                    setCheckLike(true);
+                }
             }
         ).catch(error=>{
             console.error('error: ', error)
         })
     },[]);
+
+    const postLike = (postId)=>{
+        axios.post(`/post/${postId}/like`,{},{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        }).then(response=>{if(response.status===201 | response.status===204){setCheckLike(!checkLike)}})}
     return (
-        <>
         <div className="post-detail">
-            <input className="form-control" value={`제목 : ${data.title}`} readOnly/>
-            <textarea className="form-control" value={data.content} readOnly/>
+            {
+                editMode? (<div className="text-center" >
+                            <div>
+                                <InputBox readOnly={false} name="titleInput" onChange={onTitleHandler} value={title} labelName="제목"/>
+                                <textarea className="form-control" rows={5} value={content} onChange={onContentHandler}/>
+                            </div>
+                            <button className="my-btn" onClick={()=>{
+                                editPost(title,content)}}>저장하기</button>
+                            </div>)
+                        : (
+                            <div className="text-center">
+                            <div>
+                                <InputBox readOnly={true} name="postTitleInput" value={title} labelName="제목"/>
+                                <textarea className="form-control" rows={5} value={content} readOnly/>
+                            </div>
+                            {userId === author? <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                            : (!checkLike ?<button className="my-btn" onClick={()=>{postLike(postId)}}>좋아요</button>
+                                    :<button className="my-btn" onClick={()=>{postLike(postId)}}>좋아요 취소</button>)}
+                            </div>
+                            )
+            }
         </div>
-        </>
+
     )
 }
 

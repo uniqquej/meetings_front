@@ -103,7 +103,7 @@ const RecruitmentAPI = ()=>{
 }
 
 const RecruitmentDetailAPI = ()=>{
-    // css 수정
+    const navigate = useNavigate();
     const {recruitId} = useParams();
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
@@ -111,6 +111,7 @@ const RecruitmentDetailAPI = ()=>{
     const [groupName, setGroupName] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [author, setAuthor] = useState("");
+    const [checkApplicate, setCheckApplicate] = useState(false);
 
     const onTitlHandler = (event) => {
         setTitle(event.currentTarget.value);
@@ -135,7 +136,9 @@ const RecruitmentDetailAPI = ()=>{
                 setNumberOfRecruits(response.data.number_of_recruits)
                 setTitle(response.data.title)
                 setContent(response.data.content)
-                setAuthor(response.author)
+                setAuthor(response.data.author.id)
+                setCheckApplicate(response.data.applicant.includes(userId))
+                console.log(checkApplicate)
             }
         ).catch(error=>{
             console.error('error: ', error)
@@ -149,7 +152,7 @@ const RecruitmentDetailAPI = ()=>{
             content:content
         },{
             headers: {
-                "Authorization":`Bearer ${accessToken}`
+                Authorization:`Bearer ${accessToken}`
             }
         })
         console.log('edit res',res)
@@ -158,10 +161,10 @@ const RecruitmentDetailAPI = ()=>{
         <>
         <div className="post-detail">
                { editMode ? (
-                <div>
-                    <InputBox readOnly={false} name="groupInput" value={groupName} labelName="모임 이름" change={onGroupNameHandler}/>
-                    <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" change={onNumberOfRecruitsHandler}/>
-                    <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" change={onTitlHandler}/>
+                <div className="text-center">
+                    <InputBox readOnly={false} name="groupInput" value={groupName} labelName="모임 이름" onChange={onGroupNameHandler}/>
+                    <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" onChange={onNumberOfRecruitsHandler}/>
+                    <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" onChange={onTitlHandler}/>
                     <textarea className="form-control" value={content} onChange={onContentHandler} rows={10}/>
                     <button className="my-btn" onClick={()=>{
                         setEditMode(false)
@@ -169,12 +172,30 @@ const RecruitmentDetailAPI = ()=>{
                         }}>저장하기</button>
                 </div>
                 ):
-                (<div>
+                (<div className="text-center">
                     <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={true} name="numberInput" value={numberOfRecruits} labelName="모집 인원"/>
                     <InputBox readOnly={true} name="titleInput" value={title} labelName="제목"/>
-                    <textarea className="form-control" value={content}  rows={10} readonly/>
-                    {userId===author?<button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>:""}
+                    <textarea className="form-control" value={content}  rows={10} readOnly/>
+                    {userId===author?(
+                                    <div>
+                                        <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                                        <button className="my-btn" onClick={()=>{
+                                            axios.delete(`/post/recruit/${recruitId}`,{
+                                                headers:{Authorization:`Bearer ${accessToken}`}
+                                            }).then(response=>{if(response.status===204){
+                                                navigate('/recruit')
+                                            }})
+                                        }}>삭제하기</button>
+                                    </div>)
+                                    :(!checkApplicate?<button className="my-btn" onClick={()=>{
+                                                            axios.post(`/post/recruit/${recruitId}/applicate`,{},{
+                                                                headers:{Authorization:`Bearer ${accessToken}`}
+                                                            }).then(response=>{
+                                                                if(response.status === 201){
+                                                                    setCheckApplicate(true)}})
+                                                        }}>지원 하기</button>
+                                                    :<button className="my-btn" disabled>지원 완료</button>)}
                 </div>
                 )
                 }
