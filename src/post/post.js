@@ -4,6 +4,7 @@ import {useParams, useNavigate} from "react-router-dom"
 import axios from "axios"
 import moment from "moment";
 import "./post.css"
+import { SelectBox } from "../components/frame";
 
 const accessToken = localStorage.getItem("access");
 
@@ -110,19 +111,16 @@ const PostDetailAPI = ()=>{
     return (
         <>
         <div className="post-detail">
-            <input className="form-control" value={`제목 : ${data.title}`} readonly/>
-            <textarea className="form-control" value={data.content} readonly/>
+            <input className="form-control" value={`제목 : ${data.title}`} readOnly/>
+            <textarea className="form-control" value={data.content} readOnly/>
         </div>
         </>
     )
 }
 
 const NewPostAPI = ()=>{
-    //추가해야할 부분
-    // category 가져와서 select option 추가
     const navigate = useNavigate();
-
-    const [category, setCategory] = useState("");
+    const [category,setCategory] = useState("");
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
 
@@ -132,23 +130,23 @@ const NewPostAPI = ()=>{
     const onContentHandler = (event) => {
         setContent(event.currentTarget.value);
     }
-    const onCategoryHandler = (event) => {
-        setCategory(event.currentTarget.value);
+    const onCategorySelector = (selectedValue) => {
+        setCategory(selectedValue);
     }
 
     const writePost = async(category, title, content)=>{
         const res = await axios.post('/post/',{category,title,content},
-        {headers:{"Authorization": `Bearer ${accessToken}`}})
+        {headers:{Authorization: `Bearer ${accessToken}`}})
 
         if(res.status===201){
-            navigate('')
+            navigate('/')
         }else{
             alert(res.data)
         }
     }
 
     const onWritePost = ()=>{
-        writePost(2,title,content)
+        writePost(category,title,content)
     }
 
     return (
@@ -156,9 +154,7 @@ const NewPostAPI = ()=>{
         <div className="post-detail">
             <div>
                 <h3 className="text-center">글 작성하기</h3>
-                {/* <selected className="form-select" aria-label="Default select example" onChange={onCategoryHandler} value={category}>
-                    <option selected>Open this select menu</option>
-                </selected>    */}
+                <SelectBox onSelect={onCategorySelector}/>
                 <input className="form-control" placeholder="제목" onChange={onTitlHandler} value={title}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>

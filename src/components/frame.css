@@ -18,13 +18,14 @@
       align-items: center;
       padding: 10px;
   }
-  
+  #logo{
+    color: white;
+  }
   .navi {
       grid-area : nav;
       display: flex;
       margin: 5px 5px;
   }
-  
   .body {
       grid-area : body;
       display: flex;
@@ -32,6 +33,10 @@
       margin: 5px 5px;
       justify-content: center;
       align-items: center;
+  }
+
+  select{
+    margin-bottom: 10px;
   }
   .nav-item{
     width: 195px;

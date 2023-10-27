@@ -7,12 +7,15 @@ import { createStore } from 'redux';
 const reducer = (currentState, action)=>{
     if(currentState=== undefined){
         return{
-            selectedCategory:undefined
+            selectedCategory:undefined,
+            categoryList:undefined
         }
     }
     switch (action.type){
         case 'select_category':
             return {...currentState, selectedCategory: action.category};
+        case 'category_list':
+            return {...currentState, categoryList: action.categories};
         default:
             return currentState;
     }
@@ -23,7 +26,7 @@ const Layout = ({children})=>{
     return (
         <div className="App">
             <div className="header">
-                <h2>MEETING</h2>
+                <h2><a href="/" id="logo">MEETING</a></h2>
                 <div>
                 <button className="my-btn">마이페이지</button>
                 <button className="my-btn">로그아웃</button>
@@ -55,6 +58,7 @@ const Nav = ()=>{
         axios.get('/post/category').then(
             response =>{
                 setCategories([...response.data]);
+                dispatch({type:"category_list", categories:[...response.data]});
             }).catch(
                 error =>{
                     console.error(error)
@@ -92,4 +96,22 @@ const NavItem = (probs)=> {
   );
 }
 
-export default Layout
+const SelectBox = ({onSelect})=>{
+    const categories = useSelector(state=>(state.categoryList));
+    const [category, setCategory] = useState("");
+
+    const onCategoryHandler = (event) => {
+        setCategory(event.currentTarget.value);
+        onSelect(event.currentTarget.value);
+    }
+    return (
+        <select className="form-select" onChange={onCategoryHandler} value={category}>
+            <option >--카테고리를 선택해주세요--</option>
+            { categories.map((data)=>(
+                <option key={data.id} value={data.id}>{data.category_name}</option>
+            ))}
+        </select>  
+    )
+}
+
+export {Layout, SelectBox}

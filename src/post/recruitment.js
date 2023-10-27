@@ -4,7 +4,10 @@ import {useSelector, useDispatch} from "react-redux";
 import axios from "axios"
 import moment from "moment";
 import "./post.css"
+
 import InputBox from "../components/input";
+import { SelectBox } from "../components/frame";
+import GroupSelector from "../components/groupSelector";
 
 const accessToken = localStorage.getItem("access");
 
@@ -197,19 +200,19 @@ const NewRecruitmentAPI = ()=>{
     const onContentHandler = (event) => {
         setContent(event.currentTarget.value);
     }
-    const onCategoryHandler = (event) => {
-        setCategory(event.currentTarget.value);
+    const onCategorySelector = (selectedValue) => {
+        setCategory(selectedValue);
     }
     const onNumberOfRecruitsHandler = (event) => {
         setNumberOfRecruits(event.currentTarget.value);
     }
-    const onGroupHandler = (event) => {
-        setGroup(event.currentTarget.value);
+    const onGroupSelector = (selectedValue) => {
+        setGroup(selectedValue);
     }
 
     const writeRecruitment = async(category, title, content, number_of_recruits, group)=>{
-        const res = await axios.post('/post/',{category,title,content,number_of_recruits,group},
-        {headers:{"Authorization": `Bearer ${accessToken}`}})
+        const res = await axios.post('/post/recruit',{category,title,content,number_of_recruits,group},
+        {headers:{Authorization: `Bearer ${accessToken}`}})
 
         if(res.status===201){
             navigate('/recruit')
@@ -227,12 +230,8 @@ const NewRecruitmentAPI = ()=>{
         <div className="post-detail">
             <div>
                 <h3 className="text-center">모집글 작성하기</h3>
-                <select className="form-select" aria-label="Default select example" onChange={onCategoryHandler} value={category}>
-                    <option selected>Open this select category</option>
-                </select>
-                <select className="form-select" aria-label="Default select example" onChange={onGroupHandler} value={group}>
-                    <option selected>Open this select group</option>
-                </select>
+                <SelectBox onSelect={onCategorySelector}/>
+                <GroupSelector onSelect={onGroupSelector}/>
                 <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" change={onNumberOfRecruitsHandler}/>
                 <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" change={onTitlHandler}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
