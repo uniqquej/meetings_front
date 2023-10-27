@@ -95,6 +95,51 @@ const PostAPI = ()=>{
     )
 }
 
+const Comments = (probs)=>{
+    const [comments, setComments]=useState([]);
+    const [comment, setComment]=useState("");
+
+    const onCommentHandler = (event)=>{
+        setComment(event.currentTarget.value)
+    }
+    useEffect(()=>{
+        axios.get(`/post/${probs.postId}/comment`,{headers:{Authorization:`Bearer ${accessToken}`}})
+            .then(response=>{
+                console.log('comment',response)
+                setComments([...response.data])})
+    },[]);
+    
+    const createComment = (postId,comment)=>{
+        axios.post(`/post/${postId}/comment`,{comment},{
+                    headers:{Authorization:`Bearer ${accessToken}`}
+                })
+                .then(response=>{
+                    if(response.status===201){
+                        setComments([...comments,{author:response.data.author, comment:response.data.comment, created_at: response.data.created_at}]);
+                        setComment("");
+                    }
+                });
+    }
+    return(
+        <div className="comments-box">
+            <div className="text-center">
+                <InputBox labelName="comment" value={comment} readOnly={false} onChange={onCommentHandler} placeholder="댓글을 남겨주세요"/>
+                <button className="my-btn" onClick={()=>{createComment(probs.postId,comment)}}>댓글 달기</button>
+            </div>
+            {comments.map((data)=>(
+               <div className="mb-3 row">   
+                <label for={data.id} class="col-sm-2 col-form-label text-center">{data.author.nickname}</label>
+                <div className="col-sm-10 comment">
+                        <p>{data.comment}</p>
+                        <p>{moment(data.created_at).format('YYYY-MM-DD HH:MM')}</p>
+                       
+                </div>
+             </div>
+            ))}
+        </div>
+    )
+}
+
 const PostDetailAPI = ()=>{
     // css 수정
     const {postId} = useParams();
@@ -141,6 +186,7 @@ const PostDetailAPI = ()=>{
         axios.post(`/post/${postId}/like`,{},{
             headers:{Authorization:`Bearer ${accessToken}`}
         }).then(response=>{if(response.status===201 | response.status===204){setCheckLike(!checkLike)}})}
+
     return (
         <div className="post-detail">
             {
@@ -163,7 +209,8 @@ const PostDetailAPI = ()=>{
                                     :<button className="my-btn" onClick={()=>{postLike(postId)}}>좋아요 취소</button>)}
                             </div>
                             )
-            }
+                }
+            <Comments postId={postId}/>
         </div>
 
     )

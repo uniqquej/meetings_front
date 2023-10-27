@@ -10,7 +10,8 @@ const InputBox = (probs)=>{
                 </div>)
                 :
                 (<div class="col-sm-10">
-                    <input type={probs.type} id={probs.name} class="form-control" value={probs.value} onChange={probs.onChange}/>
+                    <input type={probs.type} id={probs.name} class="form-control" 
+                    value={probs.value} onChange={probs.onChange} placeholder={probs.placeholder}/>
                 </div>)   
             }
         </div>

@@ -41,3 +41,13 @@ a{
     margin-bottom: 5px;
 }
 
+.comments-box{
+    margin: 8px auto;
+    width: 70%;
+}
+.comment{
+    border: 1px solid rgb(216, 210, 210);
+    border-radius: 5px;
+    padding: 5px;
+    text-align: center;
+}
