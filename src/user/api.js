@@ -1,10 +1,14 @@
 import "./api.css"
 
 import React, {useState} from "react";
+import qs from 'qs';
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 
-axios.defaults.baseURL = "http://127.0.0.1:8000/"
+axios.defaults.baseURL = "http://127.0.0.1:8000/";
+axios.defaults.paramsSerializer = params=>{
+    return qs.stringify(params);
+};
 
 const LoginPage = ()=>{
     const navigate = useNavigate();

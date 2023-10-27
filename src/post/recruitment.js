@@ -1,18 +1,22 @@
 import React, {useState, useEffect} from "react"
 import {useParams, useNavigate} from "react-router-dom"
+import {useSelector, useDispatch} from "react-redux";
 import axios from "axios"
 import moment from "moment";
 import "./post.css"
 import InputBox from "../components/input";
 
 const accessToken = localStorage.getItem("access");
+
 let userId;
 if (accessToken){
     userId = JSON.parse(localStorage.getItem('payload')).user_id;
 }
 
 const RecruitmentAPI = ()=>{
+    const dispatch = useDispatch();
     const navigate = useNavigate();
+    const category = useSelector((state)=> state.selectedCategory);
 
     const [data, setData] = useState([]);
     const [searchWord, setSearchWord] = useState("");
@@ -22,7 +26,7 @@ const RecruitmentAPI = ()=>{
     }
 
     const searchKeyword = async(keyword)=>{
-        let params = {search:keyword}
+        let params = {search:keyword, category:category}
         const res = await axios.get('/post/recruit',
         {params});
         if (res.status === 200){
@@ -32,7 +36,9 @@ const RecruitmentAPI = ()=>{
                 <div className="post-list">
                     <div>
                         <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
-                        <button className="my-btn" onClick={()=>{navigate('/')}}>게시글 보기</button>
+                        <button className="my-btn" onClick={()=>{
+                            navigate('/');
+                            dispatch({type:'select_category', selectedCategory:undefined});}}>게시글 보기</button>
                         <div className="input-group search-box">
                             <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
                             value={searchWord} onChange={searchHandler}/>
@@ -55,7 +61,8 @@ const RecruitmentAPI = ()=>{
     }
 
     useEffect(()=>{
-        axios.get('/post/recruit').then(
+        let params = {category:category};
+        axios.get('/post/recruit',{params}).then(
             response => {
                 setData([...response.data]);
                 console.log(response)
@@ -63,13 +70,15 @@ const RecruitmentAPI = ()=>{
         ).catch(error=>{
             console.error('error: ', error)
         })
-    },[]);
+    },[category]);
     return (
         <>
         <div className="post-list text-center">
             <div>
                 <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
-                <button className="my-btn" onClick={()=>{navigate('/')}}>게시글 보기</button>
+                <button className="my-btn" onClick={()=>{
+                    navigate('/');
+                    dispatch({type:'select_category', selectedCategory:undefined});}}>게시글 보기</button>
                 <div className="input-group search-box">
                     <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
                     value={searchWord} onChange={searchHandler}/>

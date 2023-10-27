@@ -1,22 +1,19 @@
 import React, {useState, useEffect} from "react"
-import { useSelector } from "react-redux"
-import qs from "qs"
+import { useSelector,useDispatch } from "react-redux"
 import {useParams, useNavigate} from "react-router-dom"
 import axios from "axios"
 import moment from "moment";
 import "./post.css"
 
 const accessToken = localStorage.getItem("access");
+
 let userId;
 if (accessToken){
     userId = JSON.parse(localStorage.getItem('payload')).user_id;
 }
 
-axios.defaults.paramsSerializer = params=>{
-    return qs.stringify(params);
-}
-
 const PostAPI = ()=>{
+    const dispatch = useDispatch();
     const category = useSelector((state)=> state.selectedCategory);
 
     const navigate = useNavigate();
@@ -38,7 +35,9 @@ const PostAPI = ()=>{
                 :(<div className="post-list">
                     <div className="text-center">
                         <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
-                        <button className="my-btn" onClick={()=>{navigate('/recruit')}}>모집 공고 보기</button>
+                        <button className="my-btn" onClick={()=>{
+                            navigate('/recruit');
+                            dispatch({type:"select_category", selectedCategory:undefined});}}>모집 공고 보기</button>
                         <div className="input-group search-box">
                             <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
                             value={searchWord} onChange={searchHandler}/>
@@ -72,7 +71,9 @@ const PostAPI = ()=>{
         <div className="post-list">
             <div className="text-center">
                 <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
-                <button className="my-btn" onClick={()=>{navigate('/recruit')}}>모집 공고 보기</button>
+                <button className="my-btn" onClick={()=>{
+                    navigate('/recruit');
+                    dispatch({type:"select_category", selectedCategory:undefined});}}>모집 공고 보기</button>
                 <div className="input-group search-box">
                     <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
                     value={searchWord} onChange={searchHandler}/>

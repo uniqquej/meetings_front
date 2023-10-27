@@ -1,7 +1,7 @@
 import "./frame.css";
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
-import {Provider, useDispatch } from 'react-redux';
+import {Provider, useDispatch, useSelector } from 'react-redux';
 import { createStore } from 'redux';
 
 const reducer = (currentState, action)=>{
@@ -43,12 +43,12 @@ const Layout = ({children})=>{
 
 const Nav = ()=>{
     const [categories, setCategories] = useState([]);
-    let [activeBtn, setActiveBtn] = useState("");
+    // let [activeBtn, setActiveBtn] = useState("");
+    const activeBtn = useSelector((state)=> state.selectedCategory);
     const dispatch = useDispatch();
 
     const toggleBtn = (id)=>{
-        dispatch({type:"select_category", category:id})
-        setActiveBtn(id);
+        dispatch({type:"select_category", category:id});
     }
     
     useEffect(()=>{
