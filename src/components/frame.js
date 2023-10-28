@@ -3,6 +3,13 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import {Provider, useDispatch, useSelector } from 'react-redux';
 import { createStore } from 'redux';
+import { useNavigate } from "react-router-dom";
+
+const accessToken=localStorage.getItem("access");
+let userId;
+if (accessToken){
+    userId = JSON.parse(localStorage.getItem('payload')).user_id;
+}
 
 const reducer = (currentState, action)=>{
     if(currentState=== undefined){
@@ -23,12 +30,13 @@ const reducer = (currentState, action)=>{
 const store = createStore(reducer);
 
 const Layout = ({children})=>{
+    const navigate = useNavigate();
     return (
         <div className="App">
             <div className="header">
                 <h2><a href="/" id="logo">MEETING</a></h2>
                 <div>
-                <button className="my-btn">마이페이지</button>
+                <button className="my-btn" onClick={()=>{navigate(`/my/${userId}`)}}>마이페이지</button>
                 <button className="my-btn">로그아웃</button>
                 </div>
             </div>

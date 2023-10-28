@@ -15,7 +15,7 @@ a{
     color: black;
 }
 .post-item{
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid rgb(207, 207, 207);
     padding: 5px;
     text-align: center;
 }

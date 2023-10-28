@@ -6,6 +6,9 @@ import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
 import {GroupList, GroupDetail} from './group/group';
+import { Socket } from './chat/caht';
+import { MyPageLayout} from './components/group_page';
+import { EditProfile } from './user/profile'; 
 
 function App() {
   return (
@@ -62,9 +65,19 @@ function App() {
               </Layout>
           }/>
           <Route path='/group/:groupId' element={
-              <Layout>
+              <MyPageLayout>
                 <GroupDetail />
+              </MyPageLayout>   
+          }/>
+           <Route path='/chat/:roomName' element={
+              <Layout>
+                <Socket />
               </Layout>
+          }/>
+          <Route path='/my/:userId' element={
+              <MyPageLayout>
+                <EditProfile/>
+              </MyPageLayout>
           }/>
         </Routes>  
     </BrowserRouter>

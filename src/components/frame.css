@@ -1,13 +1,23 @@
+@font-face {
+  font-family: 'Pretendard-Regular';
+  src: url('https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+}
+*{
+  font-family: 'Pretendard-Regular';
+}
+
 .App {
     background-color: #282c34;
     height: 100vh;
     display: grid;
     grid-template-rows : 50px auto;
-       grid-template-columns:200px auto;
+       grid-template-columns:250px auto;
        grid-template-areas: 
          "header  header"
          "nav body";
-    font-size: calc(8px + 1vmin);
+    font-size: 18px;
     color: white;
   }
   .header {
@@ -25,6 +35,8 @@
       grid-area : nav;
       display: flex;
       margin: 5px 5px;
+      background-color: white;
+      border-radius: 5px;
   }
   .body {
       grid-area : body;
@@ -38,8 +50,16 @@
   select{
     margin-bottom: 10px;
   }
+  .accordion{
+    width: 250px;
+  }
+  .group-name{
+    margin: 0;
+    width: 100%;
+
+  }
   .nav-item{
-    width: 195px;
+    width: 240px;
     text-align: center;
     padding: 3px;
     border: none;
@@ -49,11 +69,11 @@
   }
 
   .nav-active{
-    width: 195px;
+    width: 240px;
     text-align: center;
     padding: 3px;
     border: none;
-    border-bottom: 1px solid white;
+    border-bottom: 1px solid #282c34;
     background-color: white;
     color: #282c34;
   }
