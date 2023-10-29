@@ -26,6 +26,24 @@ const EditProfile = ()=>{
         setPhoneNumber(e.currentTarget.value);
     }
 
+    const saveEdit = (nickname,password,phone_number)=>{
+        const editData = {nickname, phone_number};
+        
+        if (password !== '****'){
+            editData[password] = password
+        }
+        axios.put('/user/my-page',{editData},{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        }).then(response=>{
+            if(response.status==202){
+                navigate(setEditMode(false))
+            }
+        }).catch(error=>{
+            console.log(error)
+            alert(error)
+        })
+    }
+
     useEffect(()=>{
         if(accessToken===null){
             navigate('/login');
@@ -42,16 +60,23 @@ const EditProfile = ()=>{
     return (
         <>
         {!editMode? (<div className="post-list">
-                        <InputBox readOnly={true} name="nicknameInput" value={nickname} labelName="닉네임"/>
-                        <InputBox readOnly={true} name="pwInput" value="********" labelName="비밀번호"/>
-                        <InputBox readOnly={true} name="phoneNumberInput" value={phoneNumber} labelName="phone"/>
-                        <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정 하기</button>
+                        <div style={{width:"70%",margin:"50px auto"}}>
+                            <InputBox readOnly={true} name="nicknameInput" value={nickname} labelName="닉네임"/>
+                            <InputBox readOnly={true} name="pwInput" value="********" labelName="비밀번호"/>
+                            <InputBox readOnly={true} name="phoneNumberInput" value={phoneNumber} labelName="phone"/>
+                            <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정 하기</button>
+                        </div>
                     </div>)
                 :(<div className="post-list">
-                <InputBox readOnly={false} name="nicknameInput" onChange={onNicknameHandler} value={nickname} labelName="닉네임"/>
-                <InputBox type="password" readOnly={false} name="pwInput" onChange={onPasswordHandler} value={password} labelName="비밀번호"/>
-                <InputBox readOnly={false} name="phoneNumberInput" onChange={onPhoneNumber} value={phoneNumber} labelName="phone"/>
-                <button className="my-btn" onClick={()=>{setEditMode(false)}}>저장 하기</button>
+                    <div style={{width:"70%",margin:"50px auto"}}>
+                        <InputBox readOnly={false} name="nicknameInput" onChange={onNicknameHandler} value={nickname} labelName="닉네임"/>
+                        <InputBox type="password" readOnly={false} name="pwInput" onChange={onPasswordHandler} value={password} labelName="비밀번호"/>
+                        <InputBox readOnly={false} name="phoneNumberInput" onChange={onPhoneNumber} value={phoneNumber} labelName="phone"/>
+                        <button className="my-btn" onClick={()=>{
+                            setEditMode(false)
+                            saveEdit(nickname,password,phoneNumber)
+                            }}>저장 하기</button>
+                    </div>
             </div>
                 )}
         </>
