@@ -60,7 +60,7 @@ const LoginPage = ()=>{
             <input className="form-control" type="password" value={Password} 
             onChange={onPasswordHandler} placeholder="password"/>
             <button className="btn btn-dark" onClick={onLogin}>로그인</button>
-            <button className="btn btn-dark">회원 가입</button>
+            <button className="btn btn-dark" onClick={()=>{navigate('/auth')}}>회원 가입</button>
         </div>
     )
 }
@@ -71,6 +71,7 @@ const AuthPage = ()=>{
     const [PhoneNumber, setPhoneNumber] = useState("");
     const [AuthNumber, setAuthNumber] = useState("");
     const [IsSmsSended, setIsSmsSended] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const onPhoneNumberHandler = (event) => {
         setPhoneNumber(event.currentTarget.value);
@@ -80,20 +81,24 @@ const AuthPage = ()=>{
         setAuthNumber(event.currentTarget.value);
     }
 
-    const sendAuthNumber = async (phone_number) =>{
+    const sendAuthNumber = (phone_number) =>{
         const userData = {
             phone_number,
         };
-        const res = await axios.post('user/sms', userData);
-        
-        if (res.status === 202){
-            setIsSmsSended(true);
-        }
-    }
-
-    const onSendAuthNumber = ()=>{
-        sendAuthNumber(PhoneNumber)
-    }
+        axios.post('user/sms', userData)
+            .then(res=>{
+                if (res.status === 202){
+                    setErrorMessage(null);
+                    setIsSmsSended(true);
+                }
+            })
+            .catch(error=>{
+                if(error.response.data.error){
+                    setErrorMessage(error.response.data.error.non_field_errors);
+                } else {
+                  setErrorMessage(error.response.data.msg);  
+                }
+    })}
 
     const checkAuthNumber = async (PhoneNumber, AuthNumber) =>{
         const userData = {
@@ -114,6 +119,8 @@ const AuthPage = ()=>{
     return(
         <div className="inputBox">
             <h3>인증번호 확인</h3>
+            {errorMessage!==null ? <span style={{color:"skyblue"}}>{errorMessage}</span>
+                                :<></>}
             <input className="form-control" type="text" value={PhoneNumber} 
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
             {
@@ -123,10 +130,15 @@ const AuthPage = ()=>{
                 )
             }
             {
-                IsSmsSended && (<button className="btn btn-dark" onClick={onCheckAuthNumber}>인증번호 확인</button>)
+                IsSmsSended && (
+                <>
+                { errorMessage!==null ? <span style={{color:"skyblue"}}>{errorMessage}</span>
+                    :<></>}
+                <button className="btn btn-dark" onClick={onCheckAuthNumber}>인증번호 확인</button>
+                </>)
             }
             {
-                !IsSmsSended && (<button className="btn btn-dark" onClick={onSendAuthNumber}>인증번호 받기</button>)
+                !IsSmsSended && (<button className="btn btn-dark" onClick={()=>{sendAuthNumber(PhoneNumber)}}>인증번호 받기</button>)
             }
         </div>
     )

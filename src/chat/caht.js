@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import "../chat/chat.css"
 
@@ -9,6 +9,7 @@ if (accessToken){
     userId = JSON.parse(localStorage.getItem('payload')).user_id;
 }
 const Socket = ()=>{
+    const navigate = useNavigate();
     const {roomName} = useParams();
     const [ws, setWs] = useState(null);
     const [messages, setMessages] = useState([]);
@@ -28,6 +29,9 @@ const Socket = ()=>{
     }
 
     useEffect(()=>{
+        if(accessToken===null){
+            navigate('/login');
+        }
         const socketUrl = `ws://127.0.0.1:8000/ws/chat/${roomName}/?token=${accessToken}`
         const websocket = new WebSocket(socketUrl);
         setWs(websocket);

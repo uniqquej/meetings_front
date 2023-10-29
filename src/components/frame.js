@@ -54,7 +54,6 @@ const Layout = ({children})=>{
 
 const Nav = ()=>{
     const [categories, setCategories] = useState([]);
-    // let [activeBtn, setActiveBtn] = useState("");
     const activeBtn = useSelector((state)=> state.selectedCategory);
     const dispatch = useDispatch();
 

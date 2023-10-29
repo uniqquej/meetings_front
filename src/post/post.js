@@ -61,6 +61,9 @@ const PostAPI = ()=>{
     }
 
     useEffect(()=>{
+        if(accessToken===null){
+            navigate('/login');
+        }
         let params = {category:category};
         axios.get('/post/',{params}).then(response => {
                 setData([...response.data]);
@@ -141,7 +144,7 @@ const Comments = (probs)=>{
 }
 
 const PostDetailAPI = ()=>{
-    // css 수정
+    const navigate = useNavigate();
     const {postId} = useParams();
     const [author, setAuthor] = useState("");
     const [editMode, setEditMode] = useState(false);
@@ -167,6 +170,9 @@ const PostDetailAPI = ()=>{
     }
 
     useEffect(()=>{
+        if(accessToken===null){
+            navigate('/login');
+        }
         axios.get(`/post/${postId}`).then(
             response => {
                 console.log(response);
