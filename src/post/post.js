@@ -61,9 +61,10 @@ const PostAPI = ()=>{
     }
 
     useEffect(()=>{
-        if(accessToken===null){
+        if (localStorage.getItem("access")===null){
             navigate('/login');
         }
+        
         let params = {category:category};
         axios.get('/post/',{params}).then(response => {
                 setData([...response.data]);

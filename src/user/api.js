@@ -51,7 +51,6 @@ const LoginPage = ()=>{
         login(PhoneNumber, Password)
     }
 
-
     return(
         <div className="inputBox">
             <h3>로그인</h3>
