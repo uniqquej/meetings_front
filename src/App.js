@@ -5,7 +5,7 @@ import {Layout} from './components/frame';
 import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
-import {GroupList, GroupDetail} from './group/group';
+import {GroupDetail, CreateGroup} from './group/group';
 import { Socket } from './chat/caht';
 import { MyPageLayout} from './components/group_page';
 import { EditProfile } from './user/profile'; 
@@ -59,14 +59,14 @@ function App() {
                 <RecruitmentDetailAPI/>
               </Layout>
             }/>
-            <Route path='/group' element={
-              <Layout>
-                <GroupList />
-              </Layout>
-          }/>
           <Route path='/group/:groupId' element={
               <MyPageLayout>
                 <GroupDetail />
+              </MyPageLayout>   
+          }/>
+        <Route path='/group/new' element={
+              <MyPageLayout>
+                <CreateGroup />
               </MyPageLayout>   
           }/>
            <Route path='/chat/:roomName' element={

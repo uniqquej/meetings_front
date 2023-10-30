@@ -3,12 +3,9 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const accessToken = localStorage.getItem("access");
-let userId;
-if (accessToken){
-    userId = JSON.parse(localStorage.getItem('payload')).user_id;
-}
 const MyPageLayout = ({children})=>{
+    const accessToken = localStorage.getItem("access");
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const navigate = useNavigate();
     return (
         <div className="App">
@@ -41,6 +38,7 @@ const MyPageNav = ()=>{
 }
 
 const MyGroup = ()=> {
+    const accessToken = localStorage.getItem("access");
     const navigate = useNavigate();
     const [data,setData]=useState([]);
 
@@ -80,6 +78,8 @@ const MyGroup = ()=> {
 
 const MyInfo = ()=>{
     const navigate = useNavigate();
+    const accessToken = localStorage.getItem("access");
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     return (
         <>
         <div className="accordion-item">
@@ -93,7 +93,7 @@ const MyInfo = ()=>{
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
                     onClick={()=>{navigate(`/my/${userId}`)}}>개인정보 수정</button>
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={navigate(``)}>그룹 만들기</button>
+                    onClick={()=>{navigate(`/group/new`)}}>그룹 만들기</button>
                 </div>
             </div>
         </div>

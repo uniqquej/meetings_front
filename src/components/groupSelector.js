@@ -2,9 +2,8 @@ import React from "react";
 import { useState,useEffect } from "react";
 import axios from "axios";
 
-const accessToken = localStorage.getItem("access");
-
 const GroupSelector = ({onSelect})=>{
+    const accessToken = localStorage.getItem("access");
     const [groups, setGroups]=useState([]);
     const [group, setGroup]=useState("");
 

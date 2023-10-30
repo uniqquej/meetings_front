@@ -4,39 +4,10 @@ import React,{useState,useEffect} from "react";
 import {useParams, useNavigate} from "react-router-dom"
 
 import "../group/group.css"
-
-const accessToken = localStorage.getItem("access");
-
-const GroupList = ()=>{
-    const [groups, setGroups] = useState([]);
-
-    useEffect(()=>{
-        axios.get('group/',{
-            headers:{
-                "Authorization": `Bearer ${accessToken}`
-            }
-        }).then(response=>{
-            console.log(response);
-            setGroups([...response.data]);
-        }).catch(error=>{
-            console.error(error)
-        });
-
-    },[])
-
-    return (
-        <div className="group-info">
-        {groups.map(group => (
-                <div className="post-item" key={group.id}>
-                    <b><a href={`/group/${group.id}`}>{group.group_name}</a></b>
-                </div>
-        ))}
-        </div>
-    )
-}
+import InputBox from "../components/input";
 
 const GroupDetail = ()=>{
-    const naveigate = useNavigate();
+    const navigate = useNavigate();
     const {groupId} = useParams();
     const [data, setData] = useState("");
     const [meetings, setMeetings] = useState([]);
@@ -56,7 +27,7 @@ const GroupDetail = ()=>{
     return (
         <div className="group-info">
             <div className="group-header">
-                <button className="my-btn" onClick={()=>{naveigate(`/chat/${data.group_name}`)}}>{data.group_name} 채팅방</button>
+                <button className="my-btn" onClick={()=>{navigate(`/chat/${data.group_name}`)}}>{data.group_name} 채팅방</button>
             </div>
             <Notice notices={notices}/>
             <Meeting meetings={meetings}/>
@@ -97,4 +68,36 @@ const ToDoList = (probs)=>{
     )
 }
 
-export {GroupList, GroupDetail};
+const CreateGroup = ()=>{
+    const accessToken = localStorage.getItem("access");
+    const [groupName, setGroupName] = useState(""); 
+
+    const onGroupNameHandler = (event)=>{
+        setGroupName(event.currentTarget.value);
+    }
+
+    const saveGroup = (groupName)=>{
+        axios.post('/group/',{group_name : groupName},{headers:{
+            Authorization:`Bearer ${accessToken}`
+        }}).then(response =>{
+            console.log(response)
+            if(response.status ===200 ){
+                setGroupName("");
+                alert(`${groupName} 생성`);
+            }
+        })
+            .catch(error=>{console.log(error)})
+    }
+    
+    return (
+        <div className="post-list text-center">
+            <div style={{width:"70%",margin:"50px auto"}}>
+                <h3>새로운 그룹 만들기</h3>
+                <InputBox readOnly={false} name="groupNameInput" value={groupName}  onChange={onGroupNameHandler} labelName="그룹 이름"/>
+                <button className="my-btn" onClick={()=>{saveGroup(groupName)}}>만들기</button>
+            </div>
+        </div>
+    )
+}
+
+export {GroupDetail, CreateGroup};

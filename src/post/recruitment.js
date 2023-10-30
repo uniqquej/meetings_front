@@ -9,13 +9,6 @@ import InputBox from "../components/input";
 import { SelectBox } from "../components/frame";
 import GroupSelector from "../components/groupSelector";
 
-const accessToken = localStorage.getItem("access");
-
-let userId;
-if (accessToken){
-    userId = JSON.parse(localStorage.getItem('payload')).user_id;
-}
-
 const RecruitmentAPI = ()=>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -103,6 +96,8 @@ const RecruitmentAPI = ()=>{
 }
 
 const RecruitmentDetailAPI = ()=>{
+    const accessToken = localStorage.getItem("access");
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const navigate = useNavigate();
     const {recruitId} = useParams();
     const [title, setTitle] = useState("");
@@ -205,8 +200,7 @@ const RecruitmentDetailAPI = ()=>{
 }
 
 const NewRecruitmentAPI = ()=>{
-    //추가해야할 부분
-    // category 가져와서 select option 추가
+    const accessToken = localStorage.getItem("access");
     const navigate = useNavigate();
 
     const [category, setCategory] = useState("");

@@ -5,9 +5,8 @@ import { useState, useEffect} from "react";
 import InputBox from "../components/input";
 import { useNavigate } from "react-router-dom";
 
-const accessToken = localStorage.getItem("access");
-
 const EditProfile = ()=>{
+    const accessToken = localStorage.getItem("access");
     const navigate = useNavigate();
     const [nickname,setNickname]=useState("");
     const [password,setPassword]=useState("****");
@@ -35,7 +34,7 @@ const EditProfile = ()=>{
         axios.put('/user/my-page',{editData},{
             headers:{Authorization:`Bearer ${accessToken}`}
         }).then(response=>{
-            if(response.status==202){
+            if(response.status===202){
                 navigate(setEditMode(false))
             }
         }).catch(error=>{
@@ -59,7 +58,7 @@ const EditProfile = ()=>{
 
     return (
         <>
-        {!editMode? (<div className="post-list">
+        {!editMode? (<div className="post-list text-center">
                         <div style={{width:"70%",margin:"50px auto"}}>
                             <InputBox readOnly={true} name="nicknameInput" value={nickname} labelName="닉네임"/>
                             <InputBox readOnly={true} name="pwInput" value="********" labelName="비밀번호"/>
@@ -67,7 +66,7 @@ const EditProfile = ()=>{
                             <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정 하기</button>
                         </div>
                     </div>)
-                :(<div className="post-list">
+                :(<div className="post-list text-center">
                     <div style={{width:"70%",margin:"50px auto"}}>
                         <InputBox readOnly={false} name="nicknameInput" onChange={onNicknameHandler} value={nickname} labelName="닉네임"/>
                         <InputBox type="password" readOnly={false} name="pwInput" onChange={onPasswordHandler} value={password} labelName="비밀번호"/>

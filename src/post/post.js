@@ -8,14 +8,9 @@ import "./post.css"
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
 
-const accessToken = localStorage.getItem("access");
-
-let userId;
-if (accessToken){
-    userId = JSON.parse(localStorage.getItem('payload')).user_id;
-}
-
 const PostAPI = ()=>{
+    const accessToken = localStorage.getItem("access");
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const dispatch = useDispatch();
     const category = useSelector((state)=> state.selectedCategory);
 
@@ -100,6 +95,7 @@ const PostAPI = ()=>{
 }
 
 const Comments = (probs)=>{
+    const accessToken = localStorage.getItem("access");
     const [comments, setComments]=useState([]);
     const [comment, setComment]=useState("");
 
@@ -145,6 +141,8 @@ const Comments = (probs)=>{
 }
 
 const PostDetailAPI = ()=>{
+    const accessToken = localStorage.getItem("access");
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const navigate = useNavigate();
     const {postId} = useParams();
     const [author, setAuthor] = useState("");
@@ -224,6 +222,7 @@ const PostDetailAPI = ()=>{
 }
 
 const NewPostAPI = ()=>{
+    const accessToken = localStorage.getItem("access");
     const navigate = useNavigate();
     const [category,setCategory] = useState("");
     const [title, setTitle] = useState("");
