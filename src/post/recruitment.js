@@ -247,8 +247,8 @@ const NewRecruitmentAPI = ()=>{
                 <h3 className="text-center">모집글 작성하기</h3>
                 <SelectBox onSelect={onCategorySelector}/>
                 <GroupSelector onSelect={onGroupSelector}/>
-                <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" change={onNumberOfRecruitsHandler}/>
-                <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" change={onTitlHandler}/>
+                <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" onChange={onNumberOfRecruitsHandler}/>
+                <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" onChange={onTitlHandler}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>
             <button className="my-btn" onClick={onWriteRecruitment}>저장하기</button>

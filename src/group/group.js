@@ -7,18 +7,23 @@ import "../group/group.css"
 import InputBox from "../components/input";
 
 const GroupDetail = ()=>{
+    const accessToken = localStorage.getItem("access");
     const navigate = useNavigate();
     const {groupId} = useParams();
     const [data, setData] = useState("");
     const [meetings, setMeetings] = useState([]);
     const [notices, setNotices] = useState([]);
+    const [toDoList, setToDoList] = useState([]);
 
     useEffect(()=>{
-        axios.get(`/group/${groupId}`).then(response=>{
+        axios.get(`/group/${groupId}`,{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        }).then(response=>{
             console.log(response)
             setData(response.data);
             setMeetings(response.data.meeting_set);
-            setNotices(response.data.notice_set)
+            setNotices(response.data.notice_set);
+            setToDoList(response.data.todolist_set);
         }).catch(error=>{
             console.error(error);
         })
@@ -31,7 +36,7 @@ const GroupDetail = ()=>{
             </div>
             <Notice notices={notices}/>
             <Meeting meetings={meetings}/>
-            <ToDoList />
+            <ToDoList toDoList ={toDoList} />
             
         </div>
     )
@@ -62,8 +67,14 @@ const Meeting = (probs)=>{
 const ToDoList = (probs)=>{
     return (
         <div className="group-todo text-center">
-            <h4>{'<'+'to do list'+'>'}</h4>
-            <h4>{moment().format('YYYY-MM-DD')} </h4>
+            <div style={{display:"flex",flexDirection:"row"}}>
+                <h4 style={{marginRight:"10px"}}>{'<'+'to do list'+'>'}</h4>
+                <h4 style={{marginRight:"10px"}}>{moment().format('YYYY-MM-DD')} </h4>
+                <button className="my-btn" onClick={()=>{}}>할 일 추가하기</button>
+            </div>
+            {probs.toDoList.map((todo)=>{
+                <div>dd</div>}
+            )}
         </div>
     )
 }
