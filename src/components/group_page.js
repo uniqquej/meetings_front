@@ -7,6 +7,17 @@ const MyPageLayout = ({children})=>{
     const accessToken = localStorage.getItem("access");
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const navigate = useNavigate();
+
+    if (accessToken){
+        const expirationTime = new Date(JSON.parse(localStorage.getItem('payload')).exp*1000);
+        if (expirationTime < Date.now()){
+            localStorage.removeItem('access');
+            localStorage.removeItem('payload');
+            alert('로그인이 필요합니다.')
+            navigate(`/login`);      
+        }
+    }
+
     return (
         <div className="App">
             <div className="header">
@@ -28,7 +39,6 @@ const MyPageLayout = ({children})=>{
 }
 
 const MyPageNav = ()=>{
-
     return(
         <div className="accordion" id="accordionFlushExample">
             <MyGroup/>
@@ -107,11 +117,11 @@ const MyInfo = ()=>{
             <div id="my-active" className="accordion-collapse collapse show">
                 <div className="accordion-body nav flex-column">
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={navigate(``)}>내가 작성한 글</button>
+                    onClick={()=>{navigate(`/`)}}>내가 작성한 글</button>
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={navigate(``)}>내가 지원한 글</button>
+                    onClick={()=>{navigate(`/`)}}>내가 지원한 글</button>
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={navigate(``)}>좋아요한 글</button>
+                    onClick={()=>{navigate(`/`)}}>좋아요한 글</button>
                 </div>
             </div>
         </div>
