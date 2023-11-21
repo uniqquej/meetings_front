@@ -13,8 +13,8 @@ const MyPageLayout = ({children})=>{
         if (expirationTime < Date.now()){
             localStorage.removeItem('access');
             localStorage.removeItem('payload');
-            alert('로그인이 필요합니다.')
             navigate(`/login`);      
+            alert('로그인이 필요합니다.')
         }
     }
 

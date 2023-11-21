@@ -11,6 +11,17 @@
          "notice schedule"
          "todo todo";
 }
+.sub-title{
+    background-color: #282c34;
+    color: white;
+    display:flex;
+    justify-content: space-between;
+    padding-left: 5px;
+}
+.sub-title>button{
+    background-color: #282c34;
+    color: white;
+}
 .group-header {
     grid-area:header;
     display: flex;
@@ -38,8 +49,23 @@
     flex-direction: column;
     border: 1px solid rgb(197, 193, 193);
 }
+.group-todo-list{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 85%;
+}
+
 .list-btn{
+    width: 100%;
     background-color: rgb(255, 255, 255);
     margin-bottom: 1px;
     border: 1px solid rgb(227, 223, 223);
+}
+
+.todo-Box{
+    border: 1px solid rgb(227, 223, 223);
+    min-width: 20%;
+    height: 100%;
+    padding: 5px;
 }

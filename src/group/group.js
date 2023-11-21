@@ -5,6 +5,7 @@ import {useParams, useNavigate} from "react-router-dom"
 
 import "../group/group.css"
 import InputBox from "../components/input";
+import {NewNoticeModal,NoticeDetailModal} from "../components/modal";
 
 const GroupDetail = ()=>{
     const accessToken = localStorage.getItem("access");
@@ -34,37 +35,65 @@ const GroupDetail = ()=>{
             <div className="group-header">
                 <button className="my-btn" onClick={()=>{navigate(`/chat/${data.group_name}`)}}>{data.group_name} 채팅방</button>
             </div>
-            <Notice notices={notices}/>
-            <Meeting meetings={meetings}/>
+            <Notice notices={notices} leader={data.leader}/>
+            <Meeting meetings={meetings}leader={data.leader}/>
             <ToDoList toDoList ={toDoList} />
-            
         </div>
     )
 }
 
 const Notice = (probs)=>{
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    const [writeModal, setWriteModal] = useState(false);
+    const [modalOpen, setModalOpen] = useState({});
+
+    const toggleModal = (noticeId) => {
+      setModalOpen(prevState => ({
+        ...prevState,
+        [noticeId]: !prevState[noticeId] || false,
+      }));
+    };
+
     return (
         <div className="group-notice text-center">
-               <h4>{'<'+'notice'+'>'}</h4>
-               {probs.notices.map((notice)=>(
-                    <button className="list-btn"  key={notice.id}>{notice.title}</button>
-                ))}
+            <div className="sub-title text-center">
+               <h4>notice</h4>
+               {writeModal && <NewNoticeModal closeModal={setWriteModal}/>}
+               {userId===probs.leader ?(<button onClick={()=>setWriteModal(true)}>+</button>):null}
+            </div>
+            {probs.notices.map((notice)=>(
+                <div key={notice.id}>
+                    <button className="list-btn" onClick={() => toggleModal(notice.id)}>{notice.title}</button>
+                    {modalOpen[notice.id] && <NoticeDetailModal noticeId = {notice.id}
+                                                      title={notice.title} content={notice.content}
+                                                      date={notice.created_at}
+                                                      closeModal={toggleModal} isLeader={userId===probs.leader}/>}
+                </div>
+            ))}
         </div>
     )
 }
 
 const Meeting = (probs)=>{
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     return (
         <div className="group-meeting text-center">
-               <h4>{'<'+'meeting'+'>'}</h4>
-               {probs.meetings.map((meeting)=>(
-                    <button className="list-btn" key={meeting.id}>{moment(meeting.time_to_meet).format("YYYY-MM-DD HH:MM")} | {meeting.title}</button>
-                ))}
+            <div className="sub-title text-center">
+               <h4>meeting</h4>
+               {userId===probs.leader
+                ?(<button>+</button>)
+                :undefined
+               }
+            </div>
+            {probs.meetings.map((meeting)=>(
+                <button className="list-btn" key={meeting.id}>{moment(meeting.time_to_meet).format("YYYY-MM-DD HH:MM")} | {meeting.title}</button>
+            ))}
         </div>
     )
 }
 
 const ToDoList = (probs)=>{
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     return (
         <div className="group-todo text-center">
             <div style={{display:"flex",flexDirection:"row"}}>
@@ -72,9 +101,46 @@ const ToDoList = (probs)=>{
                 <h4 style={{marginRight:"10px"}}>{moment().format('YYYY-MM-DD')} </h4>
                 <button className="my-btn" onClick={()=>{}}>할 일 추가하기</button>
             </div>
-            {probs.toDoList.map((todo)=>{
-                <div>dd</div>}
-            )}
+            <div className="group-todo-list">
+            {probs.toDoList.filter((todo)=>{
+                let today = moment(Date.now()).format('YYYY-MM-DD');
+                return todo.date === today
+            })
+            .map((data)=>(
+                <div className="todo-Box">
+                    <div><h4>{data.writer.nickname}</h4></div>
+                    {data.writer.id===userId
+                    ?(  data.todo_set.map(todo=>(
+                            <div className="form-check">
+                                {todo.is_done
+                                    ?(<input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked/>)
+                                    :(<input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>)
+                                }
+                                <label className="form-check-label" for="flexCheckDefault">
+                                {todo.task}
+                                </label>
+                            </div>
+                    ))
+                    )
+                    :(
+                        data.todo_set.map(todo=>(
+                            <div className="form-check">
+                                {todo.is_done
+                                    ?(<input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked disabled/>)
+                                    :(<input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled/>)
+                                }
+                                <label className="form-check-label" for="flexCheckDefault">
+                                {todo.task}
+                                </label>
+                            </div>
+                        ))
+                        )
+                    }
+                    
+
+                </div>
+            ))}
+            </div>
         </div>
     )
 }
