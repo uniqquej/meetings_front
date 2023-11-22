@@ -69,3 +69,20 @@
     height: 100%;
     padding: 5px;
 }
+.calender-box{
+    display: flex;
+    flex-direction: row;
+}
+.detail-box,.calender{
+    width: 50%;
+    padding: 5px;
+}
+
+.dot {
+    height: 6px;
+    width: 6px;
+    background-color: #f87171;
+    border-radius: 50%;
+    display: flex;
+    margin: auto;
+  }
