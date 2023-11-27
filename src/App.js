@@ -69,7 +69,7 @@ function App() {
                 <CreateGroup />
               </MyPageLayout>   
           }/>
-           <Route path='/chat/:roomName' element={
+           <Route path='/chat/:roomId' element={
               <Layout>
                 <Socket />
               </Layout>

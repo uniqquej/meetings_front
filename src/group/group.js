@@ -43,7 +43,7 @@ const GroupDetail = ()=>{
     return (
         <div className="group-info">
             <div className="group-header">
-                <button className="my-btn" onClick={()=>{navigate(`/chat/${data.group_name}`)}}>{data.group_name} 채팅방</button>
+                <button className="my-btn" onClick={()=>{navigate(`/chat/${data.id}`)}}>{data.group_name} 채팅방</button>
             </div>
             <Notice notices={notices} leader={data.leader}/>
             <Meeting meetings={meetings} leader={data.leader} dates={dates}/>

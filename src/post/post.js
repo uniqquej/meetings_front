@@ -65,6 +65,9 @@ const PostAPI = ()=>{
                 setData([...response.data]);
             }
         ).catch(error=>{
+            if (error.response.status === 401){
+                navigate('/login');
+            }
             console.error('error: ', error)
         })
     },[category]);
