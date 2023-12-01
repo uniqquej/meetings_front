@@ -22,6 +22,16 @@ const PostAPI = ()=>{
         setSearchWord(event.currentTarget.value);
     }
 
+    if (accessToken){
+        const expirationTime = new Date(JSON.parse(localStorage.getItem('payload')).exp*1000);
+        if (expirationTime < Date.now()){
+            navigate(`/login`);      
+            alert('로그인이 필요합니다.')
+            localStorage.removeItem('access');
+            localStorage.removeItem('payload');
+        }
+    }
+
     const searchKeyword = async(keyword)=>{
         let params = {search:keyword, category:category}
         const res = await axios.get(`/post/`,
@@ -130,8 +140,8 @@ const Comments = (probs)=>{
                 <button className="my-btn" onClick={()=>{createComment(probs.postId,comment)}}>댓글 달기</button>
             </div>
             {comments.map((data)=>(
-               <div className="mb-3 row">   
-                <label for={data.id} class="col-sm-2 col-form-label text-center">{data.author.nickname}</label>
+               <div key={data.id} className="mb-3 row">   
+                <label htmlFor={data.id} className="col-sm-2 col-form-label text-center">{data.author.nickname}</label>
                 <div className="col-sm-10 comment">
                         <p>{data.comment}</p>
                         <p>{moment(data.created_at).format('YYYY-MM-DD HH:MM')}</p>

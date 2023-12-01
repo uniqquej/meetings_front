@@ -11,10 +11,10 @@ const MyPageLayout = ({children})=>{
     if (accessToken){
         const expirationTime = new Date(JSON.parse(localStorage.getItem('payload')).exp*1000);
         if (expirationTime < Date.now()){
-            localStorage.removeItem('access');
-            localStorage.removeItem('payload');
             navigate(`/login`);      
             alert('로그인이 필요합니다.')
+            localStorage.removeItem('access');
+            localStorage.removeItem('payload');
         }
     }
 
