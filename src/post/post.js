@@ -8,6 +8,19 @@ import "./post.css"
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
 
+const postLike = async(postId)=>{
+    const accessToken = localStorage.getItem("access");
+
+    const res = await axios.post(`/post/${postId}/like`,{},{
+        headers:{Authorization:`Bearer ${accessToken}`}
+    })
+
+    if(res.status===201 | res.status===204){
+            return true
+        }
+        return false
+    }
+
 const PostAPI = ()=>{
     const accessToken = localStorage.getItem("access");
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
@@ -25,12 +38,12 @@ const PostAPI = ()=>{
     if (accessToken){
         const expirationTime = new Date(JSON.parse(localStorage.getItem('payload')).exp*1000);
         if (expirationTime < Date.now()){
-            navigate(`/login`);      
+            window.location(`/login`);      
             alert('로그인이 필요합니다.')
             localStorage.removeItem('access');
             localStorage.removeItem('payload');
         }
-    }
+    } 
 
     const searchKeyword = async(keyword)=>{
         let params = {search:keyword, category:category}
@@ -73,6 +86,7 @@ const PostAPI = ()=>{
         let params = {category:category};
         axios.get('/post/',{params}).then(response => {
                 setData([...response.data]);
+                console.log(response.data)
             }
         ).catch(error=>{
             if (error.response.status === 401){
@@ -98,6 +112,9 @@ const PostAPI = ()=>{
         {data.map((post) => (
                 <div className="post-item" key={post.id}>
                     <b><a href={`/post/${post.id}`}>{post.title}</a></b>
+                    {post.likes.includes(userId)
+                        ?<img src="https://cdn-icons-png.flaticon.com/512/138/138533.png" style={{"width":"20px", "marginLeft":"10px"}} />
+                        :<img src="https://cdn-icons-png.flaticon.com/512/138/138454.png" style={{"width":"20px","marginLeft":"10px"}} />}
                     { post.author.nickname===""
                     ?(<p> unknown / {moment(post.created_at).format("YYYY-MM-DD")}</p>)
                     :(<p>{post.author.nickname} / {moment(post.created_at).format("YYYY-MM-DD")}</p>)}
@@ -200,10 +217,10 @@ const PostDetailAPI = ()=>{
         })
     },[]);
 
-    const postLike = (postId)=>{
-        axios.post(`/post/${postId}/like`,{},{
-            headers:{Authorization:`Bearer ${accessToken}`}
-        }).then(response=>{if(response.status===201 | response.status===204){setCheckLike(!checkLike)}})}
+    const pushLike = async(postId)=>{
+        const check = await postLike(postId);
+        if(check){setCheckLike(!checkLike);}
+    }
 
     return (
         <div className="post-detail">
@@ -223,8 +240,8 @@ const PostDetailAPI = ()=>{
                                 <textarea className="form-control" rows={5} value={content} readOnly/>
                             </div>
                             {userId === author? <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
-                            : (!checkLike ?<button className="my-btn" onClick={()=>{postLike(postId)}}>좋아요</button>
-                                    :<button className="my-btn" onClick={()=>{postLike(postId)}}>좋아요 취소</button>)}
+                            : (!checkLike ?<button className="my-btn" onClick={()=>{pushLike(postId)}}>좋아요</button>
+                                    :<button className="my-btn" onClick={()=>{pushLike(postId)}}>좋아요 취소</button>)}
                             </div>
                             )
                 }

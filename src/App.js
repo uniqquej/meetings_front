@@ -6,8 +6,9 @@ import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
 import {GroupDetail, CreateGroup} from './group/group';
+import {MyToDoList} from './group/toDoList'
 import { Socket } from './chat/caht';
-import { MyPageLayout} from './components/group_page';
+import { MyPageLayout} from './components/myPageFrame';
 import { EditProfile } from './user/profile'; 
 
 function App() {
@@ -64,15 +65,20 @@ function App() {
                 <GroupDetail />
               </MyPageLayout>   
           }/>
+          <Route path='/group/:groupId/to-do' element={
+              <MyPageLayout>
+                <MyToDoList/>
+              </MyPageLayout>   
+          }/>
         <Route path='/group/new' element={
               <MyPageLayout>
                 <CreateGroup />
               </MyPageLayout>   
           }/>
            <Route path='/chat/:roomId' element={
-              <Layout>
+              <MyPageLayout>
                 <Socket />
-              </Layout>
+              </MyPageLayout>
           }/>
           <Route path='/my/:userId' element={
               <MyPageLayout>
