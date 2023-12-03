@@ -47,7 +47,7 @@ const GroupDetail = ()=>{
             </div>
             <Notice notices={notices} leader={data.leader}/>
             <Meeting meetings={meetings} leader={data.leader} dates={dates}/>
-            <ToDoList toDoList ={toDoList} />
+            <ToDoList groupId = {groupId} toDoList ={toDoList} />
         </div>
     )
 }
@@ -100,7 +100,7 @@ const Meeting = (probs)=>{
              </div>
              <div className="calender-box">
                 <Calendar
-                    className="calender"
+                    className="group-calender"
                     onChange={onChange}
                     value={value}
                     formatDay={(locale, date) => moment(date).format("DD")}
@@ -134,12 +134,13 @@ const Meeting = (probs)=>{
 
 const ToDoList = (probs)=>{
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    const navigate = useNavigate();
     return (
         <div className="group-todo text-center">
             <div style={{display:"flex",flexDirection:"row"}}>
                 <h4 style={{marginRight:"10px"}}>{'<'+'to do list'+'>'}</h4>
                 <h4 style={{marginRight:"10px"}}>{moment().format('YYYY-MM-DD')} </h4>
-                <button className="my-btn" onClick={()=>{}}>할 일 추가하기</button>
+                <button className="my-btn" onClick={()=>{navigate(`/group/${probs.groupId}/to-do`)}}>할 일 추가하기</button>
             </div>
             <div className="group-todo-list">
             {probs.toDoList.filter((todo)=>{
