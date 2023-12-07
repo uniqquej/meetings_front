@@ -5,6 +5,7 @@ import axios from "axios"
 import moment from "moment";
 
 import "./post.css"
+import { checkToken } from "../utils/checkToken";
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
 
@@ -23,7 +24,7 @@ const postLike = async(postId)=>{
 
 const PostAPI = ()=>{
     const accessToken = localStorage.getItem("access");
-    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    let userId;
     const dispatch = useDispatch();
     const category = useSelector((state)=> state.selectedCategory);
 
@@ -35,15 +36,9 @@ const PostAPI = ()=>{
         setSearchWord(event.currentTarget.value);
     }
 
-    if (accessToken){
-        const expirationTime = new Date(JSON.parse(localStorage.getItem('payload')).exp*1000);
-        if (expirationTime < Date.now()){
-            window.location(`/login`);      
-            alert('로그인이 필요합니다.')
-            localStorage.removeItem('access');
-            localStorage.removeItem('payload');
-        }
-    } 
+    if(checkToken(accessToken)){
+        userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    }
 
     const searchKeyword = async(keyword)=>{
         let params = {search:keyword, category:category}

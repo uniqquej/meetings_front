@@ -5,6 +5,8 @@ import {Provider, useDispatch, useSelector } from 'react-redux';
 import { createStore } from 'redux';
 import { useNavigate } from "react-router-dom";
 
+import { checkToken } from "../utils/checkToken";
+
 const reducer = (currentState, action)=>{
     if(currentState=== undefined){
         return{
@@ -25,8 +27,13 @@ const store = createStore(reducer);
 
 const Layout = ({children})=>{
     const accessToken = localStorage.getItem("access");
-    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    let userId;
     const navigate = useNavigate();
+
+    if(checkToken(accessToken)){
+        userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    }
+
     return (
         <div className="App">
             <div className="header">

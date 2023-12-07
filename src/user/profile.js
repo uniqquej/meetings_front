@@ -4,6 +4,7 @@ import { useState, useEffect} from "react";
 
 import InputBox from "../components/input";
 import { useNavigate } from "react-router-dom";
+import { checkToken } from "../utils/checkToken";
 
 const EditProfile = ()=>{
     const accessToken = localStorage.getItem("access");
@@ -44,12 +45,9 @@ const EditProfile = ()=>{
     }
 
     useEffect(()=>{
-        if(accessToken===null){
-            navigate('/login');
-        }
+        checkToken(accessToken);
         axios.get('/user/my-page',{headers:{Authorization:`Bearer ${accessToken}`}})
             .then(response=>{
-                console.log(response.data)
                 setNickname(response.data.nickname)
                 setPhoneNumber(response.data.phone_number)})
             .catch(error=>{console.error(error)})
