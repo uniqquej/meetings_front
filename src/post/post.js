@@ -19,8 +19,7 @@ const postLike = async(postId)=>{
     if(res.status===201 | res.status===204){
             return true
         }
-        return false
-    }
+}
 
 const PostAPI = ()=>{
     const accessToken = localStorage.getItem("access");
@@ -288,6 +287,7 @@ const NewPostAPI = ()=>{
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>
             <button className="my-btn" onClick={onWritePost}>저장하기</button>
+            <button className="my-btn" onClick={()=>{navigate(-1)}}>취소하기</button>
         </div>
         </>
     )

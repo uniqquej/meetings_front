@@ -112,11 +112,11 @@ const MyInfo = ()=>{
             <div id="my-active" className="accordion-collapse collapse show">
                 <div className="accordion-body nav flex-column">
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/`)}}>내가 작성한 글</button>
+                    onClick={()=>{navigate(`/my/${userId}/post`)}}>내가 작성한 글</button>
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/`)}}>내가 지원한 글</button>
+                    onClick={()=>{navigate(`/my/${userId}/apply`)}}>내가 지원한 글</button>
                     <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/`)}}>좋아요한 글</button>
+                    onClick={()=>{navigate(`/my/${userId}/like`)}}>좋아요한 글</button>
                 </div>
             </div>
         </div>

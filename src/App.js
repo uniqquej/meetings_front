@@ -5,9 +5,10 @@ import {Layout} from './components/frame';
 import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
+import { LikePostAPI, ApplyPostAPI,MyPostAPI } from './post/profilePost';
 import {GroupDetail, CreateGroup} from './group/group';
 import {MyToDoList} from './group/toDoList'
-import { Socket } from './chat/caht';
+import { Socket } from './chat/chat';
 import { MyPageLayout} from './components/myPageFrame';
 import { EditProfile } from './user/profile'; 
 
@@ -83,6 +84,21 @@ function App() {
           <Route path='/my/:userId' element={
               <MyPageLayout>
                 <EditProfile/>
+              </MyPageLayout>
+          }/>
+          <Route path='/my/:userId/like' element={
+              <MyPageLayout>
+                <LikePostAPI/>
+              </MyPageLayout>
+          }/>
+          <Route path='/my/:userId/apply' element={
+              <MyPageLayout>
+                <ApplyPostAPI/>
+              </MyPageLayout>
+          }/>
+          <Route path='/my/:userId/post' element={
+              <MyPageLayout>
+                <MyPostAPI/>
               </MyPageLayout>
           }/>
         </Routes>  
