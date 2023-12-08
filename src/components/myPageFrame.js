@@ -1,8 +1,19 @@
 import "./frame.css";
 import React, { useEffect, useState } from 'react';
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink} from "react-router-dom";
 import { checkToken } from "../utils/checkToken";
+
+const activeStyle = {
+    width: "100%",
+    fontSize:'18px',
+    textAlign: "center",
+    padding: "3px",
+    border: "none",
+    borderBottom: "1px solid white",
+    backgroundColor: "white",
+    color: "#282c34"
+}
 
 const MyPageLayout = ({children})=>{
     const accessToken = localStorage.getItem("access");
@@ -44,7 +55,6 @@ const MyPageNav = ()=>{
 
 const MyGroup = ()=> {
     const accessToken = localStorage.getItem("access");
-    const navigate = useNavigate();
     const [data,setData]=useState([]);
 
     useEffect(()=>{
@@ -69,8 +79,8 @@ const MyGroup = ()=> {
                 <div className="accordion-body nav flex-column">
                     {
                       data.map(group=>(
-                        <button key={group.id} className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                        onClick={()=>{navigate(`/group/${group.id}`)}}>{group.group_name}</button>
+                        <NavLink key={group.id} className="nav-item" style={({isActive})=>(isActive? activeStyle :navStyle)}
+                        to='/group/${group.id}'>{group.group_name}</NavLink>
                       ))  
                     }
                 </div>
@@ -82,9 +92,8 @@ const MyGroup = ()=> {
 }
 
 const MyInfo = ()=>{
-    const navigate = useNavigate();
-    const accessToken = localStorage.getItem("access");
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    
     return (
         <>
         <div className="accordion-item">
@@ -95,10 +104,10 @@ const MyInfo = ()=>{
             </h2>
             <div id="my-info" className="accordion-collapse collapse show">
                 <div className="accordion-body nav flex-column">
-                    <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/my/${userId}`)}}>개인정보 수정</button>
-                    <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/group/new`)}}>그룹 만들기</button>
+                    <NavLink className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
+                    to='/my/${userId}'>개인정보 수정</NavLink>
+                    <NavLink className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
+                    to='/group/new'>그룹 만들기</NavLink>
                 </div>
             </div>
         </div>
@@ -111,14 +120,14 @@ const MyInfo = ()=>{
             </h2>
             <div id="my-active" className="accordion-collapse collapse show">
                 <div className="accordion-body nav flex-column">
-                    <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/my/${userId}/post`)}}>내가 작성한 글</button>
-                    <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/my/${userId}/recruitment`)}}>내가 작성한 모집공고</button>
-                    <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/my/${userId}/apply`)}}>내가 지원한 글</button>
-                    <button className="nav-item" style={{width:'100%', fontSize:'18px'}}
-                    onClick={()=>{navigate(`/my/${userId}/like`)}}>좋아요한 글</button>
+                    <NavLink className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
+                    to='/my/${userId}/post'>내가 작성한 글</NavLink>
+                    <NavLink className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
+                    to='/my/${userId}/recruitment'>내가 작성한 모집공고</NavLink>
+                    <NavLink className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
+                    to='/my/${userId}/apply'>내가 지원한 글</NavLink>
+                    <NavLink className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
+                    to='/my/${userId}/like'>좋아요한 글</NavLink>
                     
                 </div>
             </div>
