@@ -27,32 +27,6 @@ const RecruitmentAPI = ()=>{
         {params});
         if (res.status === 200){
             setData([...res.data]);
-            return (
-                <>
-                <div className="post-list">
-                    <div>
-                        <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
-                        <button className="my-btn" onClick={()=>{
-                            navigate('/');
-                            dispatch({type:'select_category', selectedCategory:undefined});}}>게시글 보기</button>
-                        <div className="input-group search-box">
-                            <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
-                            value={searchWord} onChange={searchHandler}/>
-                            <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
-                        </div>
-                    </div>
-                {data.map((recruitment) => (
-                        <div className="post-item" key={recruitment.id}>
-                            <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
-                            { recruitment.author.nickname===""
-                            ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
-                            :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
-                            <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
-                        </div>
-                ))}
-                </div>
-                </>
-            )
         }
     }
 

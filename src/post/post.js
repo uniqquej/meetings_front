@@ -45,30 +45,6 @@ const PostAPI = ()=>{
         {params});
         if (res.status === 200){
             setData([...res.data]);
-            return (
-                data.length === 0? <div className="post-list"><div>검색결과 없음</div></div>
-                :(<div className="post-list">
-                    <div className="text-center">
-                        <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
-                        <button className="my-btn" onClick={()=>{
-                            navigate('/recruit');
-                            dispatch({type:"select_category", selectedCategory:undefined});}}>모집 공고 보기</button>
-                        <div className="input-group search-box">
-                            <input type="text" className="form-control" placeholder="검색어를 입력해주세요"
-                            value={searchWord} onChange={searchHandler}/>
-                            <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
-                        </div>
-                    </div>
-                {data.map((post) => (
-                        <div className="post-item" key={post.id}>
-                            <b><a href={`/post/${post.id}`}>{post.title}</a></b>
-                            { post.author.nickname===""
-                            ?(<p> unknown / {moment(post.created_at).format("YYYY-MM-DD")}</p>)
-                            :(<p>{post.author.nickname} / {moment(post.created_at).format("YYYY-MM-DD")}</p>)}
-                        </div>
-                ))}
-                </div>)
-            )
         }
     }
 
