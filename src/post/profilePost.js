@@ -92,7 +92,18 @@ const ApplyPostAPI = ()=>{
 
     return (
         <>
-            <PostPage data={data} userId={userId} />
+             <div className="post-list text-center">
+                <button className="my-btn" onClick={()=>{navigate(-1);}}>이전 페이지</button>
+        {data.map((recruitment) => (
+                <div className="post-item" key={recruitment.id}>
+                    <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
+                    { recruitment.author.nickname===""
+                    ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
+                    :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
+                    <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
+                </div>
+        ))}
+        </div>
         </>
     )
 }

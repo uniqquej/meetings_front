@@ -74,6 +74,8 @@ const RecruitmentDetailAPI = ()=>{
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const navigate = useNavigate();
     const {recruitId} = useParams();
+    const [categoryName, setCategoryName]= useState("");
+    const [categoryId, setCategoryId]= useState("");
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [numberOfRecruits, setNumberOfRecruits] = useState("");
@@ -88,12 +90,11 @@ const RecruitmentDetailAPI = ()=>{
     const onContentHandler = (event) => {
         setContent(event.currentTarget.value);
     }
-
     const onNumberOfRecruitsHandler = (event) => {
         setNumberOfRecruits(event.currentTarget.value);
     }
-    const onGroupNameHandler = (event) => {
-        setGroupName(event.currentTarget.value);
+    const onCategorySelector = (selectedValue) => {
+        setCategoryId(selectedValue);
     }
     
 
@@ -101,73 +102,81 @@ const RecruitmentDetailAPI = ()=>{
         axios.get(`/post/recruit/${recruitId}`).then(
             response => {
                 console.log(response)
-                setGroupName(response.data.group.group_name)
-                setNumberOfRecruits(response.data.number_of_recruits)
-                setTitle(response.data.title)
-                setContent(response.data.content)
-                setAuthor(response.data.author.id)
-                setCheckApplicate(response.data.applicant.includes(userId))
-                console.log(checkApplicate)
+                setCategoryName(response.data.category.category_name);
+                setCategoryId(response.data.category.id);
+                setGroupName(response.data.group.group_name);
+                setNumberOfRecruits(response.data.number_of_recruits);
+                setTitle(response.data.title);
+                setContent(response.data.content);
+                setAuthor(response.data.author.id);
+                setCheckApplicate(response.data.applicant.includes(userId));
             }
         ).catch(error=>{
             console.error('error: ', error)
         })
     },[]);
 
-    const editRecruitment = async(number_of_recruits,title,content)=>{
+    const editRecruitment = async(number_of_recruits,title,content,category)=>{
         const res = await axios.put(`/post/recruit/${recruitId}`, {
-            number_of_recruits : number_of_recruits,
-            title:title,
-            content:content
+            number_of_recruits,title,content,category
         },{
             headers: {
                 Authorization:`Bearer ${accessToken}`
             }
         })
-        console.log('edit res',res)
+        if(res.status===202){
+            window.location.reload();
+        }
+    }
+
+    const applyRecruitment = async()=>{
+        const res = await axios.post(`/post/recruit/${recruitId}/applicate`,{},{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        })
+        if(res.status === 201){
+            setCheckApplicate(true)
+        } else if (res.status === 204){
+            setCheckApplicate(false)
+        }
     }
     return (
         <>
         <div className="post-detail">
+            <button className="my-btn" onClick={()=>{navigate(-1);}}>이전 페이지</button>
                { editMode ? (
-                <div className="text-center">
-                    <InputBox readOnly={false} name="groupInput" value={groupName} labelName="모임 이름" onChange={onGroupNameHandler}/>
+                   <div className="text-center">
+                    <SelectBox onSelect={onCategorySelector} props={{category:categoryId}}/>
+                    <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" onChange={onNumberOfRecruitsHandler}/>
                     <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" onChange={onTitlHandler}/>
                     <textarea className="form-control" value={content} onChange={onContentHandler} rows={10}/>
                     <button className="my-btn" onClick={()=>{
                         setEditMode(false)
-                        editRecruitment(numberOfRecruits,title,content);
+                        editRecruitment(numberOfRecruits,title,content,categoryId);
                         }}>저장하기</button>
                 </div>
                 ):
                 (<div className="text-center">
+                    <InputBox readOnly={true} name="categoryInput" value={categoryName} labelName="카테고리"/>
                     <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={true} name="numberInput" value={numberOfRecruits} labelName="모집 인원"/>
                     <InputBox readOnly={true} name="titleInput" value={title} labelName="제목"/>
                     <textarea className="form-control" value={content}  rows={10} readOnly/>
-                    {userId===author?(
-                                    <div>
-                                        <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
-                                        <button className="my-btn" onClick={()=>{
-                                            axios.delete(`/post/recruit/${recruitId}`,{
-                                                headers:{Authorization:`Bearer ${accessToken}`}
-                                            }).then(response=>{if(response.status===204){
-                                                navigate('/recruit')
-                                            }})
-                                        }}>삭제하기</button>
-                                    </div>)
-                                    :(!checkApplicate?<button className="my-btn" onClick={()=>{
-                                                            axios.post(`/post/recruit/${recruitId}/applicate`,{},{
-                                                                headers:{Authorization:`Bearer ${accessToken}`}
-                                                            }).then(response=>{
-                                                                if(response.status === 201){
-                                                                    setCheckApplicate(true)}})
-                                                        }}>지원 하기</button>
-                                                    :<button className="my-btn" disabled>지원 완료</button>)}
+                    {userId===author
+                    ?(<div>
+                        <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                        <button className="my-btn" onClick={()=>{
+                            axios.delete(`/post/recruit/${recruitId}`,{
+                                headers:{Authorization:`Bearer ${accessToken}`}
+                            }).then(response=>{if(response.status===204){
+                                navigate('/recruit')
+                            }})
+                        }}>삭제하기</button>
+                    </div>)
+                    :(!checkApplicate?<button className="my-btn" onClick={applyRecruitment}>지원 하기</button>
+                                    :<button className="my-btn" onClick={applyRecruitment}>지원 완료</button>)}
                 </div>
-                )
-                }
+                )}
         </div>
         </>
     )

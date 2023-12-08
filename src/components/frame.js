@@ -106,19 +106,19 @@ const NavItem = (probs)=> {
   );
 }
 
-const SelectBox = ({onSelect})=>{
+const SelectBox = ({onSelect,props})=>{
     const categories = useSelector(state=>(state.categoryList));
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState(props.category);
 
     const onCategoryHandler = (event) => {
         setCategory(event.currentTarget.value);
         onSelect(event.currentTarget.value);
     }
     return (
-        <select className="form-select" onChange={onCategoryHandler} value={category}>
+        <select className="form-select" onChange={onCategoryHandler} value={category} defaultValue={props.category}>
             <option >--카테고리를 선택해주세요--</option>
             { categories.map((data)=>(
-                <option key={data.id} value={data.id}>{data.category_name}</option>
+               <option key={data.id} value={data.id}>{data.category_name}</option>
             ))}
         </select>  
     )
