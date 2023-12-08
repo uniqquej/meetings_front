@@ -228,7 +228,7 @@ const NewRecruitmentAPI = ()=>{
         <div className="post-detail">
             <div>
                 <h3 className="text-center">모집글 작성하기</h3>
-                <SelectBox onSelect={onCategorySelector}/>
+                <SelectBox onSelect={onCategorySelector} props={{category:category}}/>
                 <GroupSelector onSelect={onGroupSelector}/>
                 <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" onChange={onNumberOfRecruitsHandler}/>
                 <InputBox readOnly={false} name="titleInput" value={title} labelName="제목" onChange={onTitlHandler}/>

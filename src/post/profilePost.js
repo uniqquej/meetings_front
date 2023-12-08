@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 
 import { checkToken } from "../utils/checkToken";
 
-const PostPage = (probs)=>{
-    let {data,userId} = probs;
+const PostPage = (props)=>{
+    let {data,userId} = props;
     return (
         <div className="post-list">
         {data.map((post) => (
@@ -22,6 +22,23 @@ const PostPage = (probs)=>{
                 </div>
         ))}
         </div>
+    )
+}
+
+const RecuitPage = (props)=>{
+    let {data} = props;
+    return (
+        <div className="post-list text-center">
+        {data.map((recruitment) => (
+        <div className="post-item" key={recruitment.id}>
+            <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
+            { recruitment.author.nickname===""
+            ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
+            :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
+            <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
+        </div>
+))}
+</div>
     )
 }
 
@@ -91,24 +108,11 @@ const ApplyPostAPI = ()=>{
     },[]);
 
     return (
-        <>
-             <div className="post-list text-center">
-                <button className="my-btn" onClick={()=>{navigate(-1);}}>이전 페이지</button>
-        {data.map((recruitment) => (
-                <div className="post-item" key={recruitment.id}>
-                    <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
-                    { recruitment.author.nickname===""
-                    ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
-                    :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
-                    <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
-                </div>
-        ))}
-        </div>
-        </>
+        <RecuitPage data={data} />
     )
 }
 
-const MyPostAPI = ()=>{
+const MyRecruitmentAPI = ()=>{
     const accessToken = localStorage.getItem("access");
     let userId;
 
@@ -119,11 +123,12 @@ const MyPostAPI = ()=>{
         userId = JSON.parse(localStorage.getItem('payload')).user_id;
     }
     useEffect(()=>{
+        let params = {option:"recruit"}
         if(checkToken(accessToken)){
             userId = JSON.parse(localStorage.getItem('payload')).user_id;
         }
         
-        axios.get(`/post/profile/${userId}`,
+        axios.get(`/post/profile/${userId}`,{params},
         {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
                 setData([...response.data]);
                 console.log(response.data)
@@ -137,10 +142,38 @@ const MyPostAPI = ()=>{
     },[]);
 
     return (
+        <RecuitPage data={data} />
+    )
+}
+
+const MyPostAPI = ()=>{
+    const accessToken = localStorage.getItem("access");
+    let userId;
+
+    const [data, setData] = useState([]);
+    
+    
+    if(checkToken(accessToken)){
+        userId = JSON.parse(localStorage.getItem('payload')).user_id;
+    }
+    useEffect(()=>{
+        if(checkToken(accessToken)){
+            userId = JSON.parse(localStorage.getItem('payload')).user_id;
+        }
+        
+        axios.get(`/post/profile/${userId}`,
+        {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
+            setData([...response.data]);
+            console.log(response.data)
+            }
+        )
+    },[]);
+
+    return (
         <>
             <PostPage data={data} userId={userId} />
         </>
     )
 }
 
-export {LikePostAPI, ApplyPostAPI, MyPostAPI}
+export {LikePostAPI, ApplyPostAPI, MyPostAPI, MyRecruitmentAPI}
