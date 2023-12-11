@@ -56,6 +56,7 @@ const MyPageNav = ()=>{
 const MyGroup = ()=> {
     const accessToken = localStorage.getItem("access");
     const [data,setData]=useState([]);
+    const navigate = useNavigate();
 
     useEffect(()=>{
         axios.get('/group/',{headers:{Authorization:`Bearer ${accessToken}`}}).then(
@@ -79,8 +80,8 @@ const MyGroup = ()=> {
                 <div className="accordion-body nav flex-column">
                     {
                       data.map(group=>(
-                        <NavLink key={group.id} className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
-                        to='/group/${group.id}'>{group.group_name}</NavLink>
+                        <button key={group.id} className="nav-item" style={{width:'100%', fontSize:'18px'}}
+                        onClick={()=>{navigate(`/group/${group.id}`)}}>{group.group_name}</button>
                       ))  
                     }
                 </div>

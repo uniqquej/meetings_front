@@ -202,6 +202,7 @@ const CreateGroup = ()=>{
             if(response.status ===200 ){
                 setGroupName("");
                 alert(`${groupName} 생성`);
+                window.location.reload();
             }
         })
             .catch(error=>{console.log(error)})
