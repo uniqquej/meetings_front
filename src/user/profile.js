@@ -32,7 +32,7 @@ const EditProfile = ()=>{
         if (password !== '****'){
             editData[password] = password
         }
-        axios.put('/user/my-page',{editData},{
+        axios.put('/user/my-page',editData,{
             headers:{Authorization:`Bearer ${accessToken}`}
         }).then(response=>{
             if(response.status===202){

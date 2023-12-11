@@ -79,7 +79,7 @@ const MyGroup = ()=> {
                 <div className="accordion-body nav flex-column">
                     {
                       data.map(group=>(
-                        <NavLink key={group.id} className="nav-item" style={({isActive})=>(isActive? activeStyle :navStyle)}
+                        <NavLink key={group.id} className="nav-item" style={({isActive})=>(isActive? activeStyle :{})}
                         to='/group/${group.id}'>{group.group_name}</NavLink>
                       ))  
                     }
