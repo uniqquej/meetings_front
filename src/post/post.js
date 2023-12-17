@@ -5,6 +5,7 @@ import axios from "axios"
 import moment from "moment";
 
 import "./post.css"
+import { PostPage} from "../components/postPage";
 import { checkToken } from "../utils/checkToken";
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
@@ -43,8 +44,9 @@ const PostAPI = ()=>{
         let params = {search:keyword, category:category}
         const res = await axios.get(`/post/`,
         {params});
+        console.log(res.data.results)
         if (res.status === 200){
-            setData([...res.data]);
+            setData([...res.data.results]);
         }
     }
 
@@ -55,8 +57,8 @@ const PostAPI = ()=>{
         
         let params = {category:category};
         axios.get('/post/',{params}).then(response => {
-                setData([...response.data]);
-                console.log(response.data)
+                setData([...response.data.results]);
+                console.log(response.data.results)
             }
         ).catch(error=>{
             if (error.response.status === 401){
@@ -67,7 +69,7 @@ const PostAPI = ()=>{
     },[category]);
 
     return (
-        <div className="post-list">
+        <PostPage data={data} userId={userId}>
             <div className="text-center">
                 <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
                 <button className="my-btn" onClick={()=>{
@@ -79,20 +81,10 @@ const PostAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
-        {data.map((post) => (
-                <div className="post-item" key={post.id}>
-                    <b><a href={`/post/${post.id}`}>{post.title}</a></b>
-                    {post.likes.includes(userId)
-                        ?<img src="https://cdn-icons-png.flaticon.com/512/138/138533.png" style={{"width":"20px", "marginLeft":"10px"}} />
-                        :<img src="https://cdn-icons-png.flaticon.com/512/138/138454.png" style={{"width":"20px","marginLeft":"10px"}} />}
-                    { post.author.nickname===""
-                    ?(<p> unknown / {moment(post.created_at).format("YYYY-MM-DD")}</p>)
-                    :(<p>{post.author.nickname} / {moment(post.created_at).format("YYYY-MM-DD")}</p>)}
-                </div>
-        ))}
-        </div>
+        </PostPage>
     )
 }
+
 
 const Comments = (probs)=>{
     const accessToken = localStorage.getItem("access");
@@ -106,7 +98,7 @@ const Comments = (probs)=>{
         axios.get(`/post/${probs.postId}/comment`,{headers:{Authorization:`Bearer ${accessToken}`}})
             .then(response=>{
                 console.log('comment',response)
-                setComments([...response.data])})
+                setComments([...response.data.results])})
     },[]);
     
     const createComment = (postId,comment)=>{
@@ -172,7 +164,7 @@ const PostDetailAPI = ()=>{
         if(accessToken===null){
             navigate('/login');
         }
-        axios.get(`/post/${postId}`).then(
+        axios.get(`/post/${postId}`,{headers:{Authorization:`Bearer ${accessToken}`}}).then(
             response => {
                 console.log(response);
                 setTitle(response.data.title);
@@ -258,7 +250,7 @@ const NewPostAPI = ()=>{
         <div className="post-detail">
             <div>
                 <h3 className="text-center">글 작성하기</h3>
-                <SelectBox onSelect={onCategorySelector}/>
+                <SelectBox onSelect={onCategorySelector} props={{category:category}}/>
                 <input className="form-control" placeholder="제목" onChange={onTitlHandler} value={title}/>
                 <textarea className="form-control" rows={15} onChange={onContentHandler} value={content}/>
             </div>

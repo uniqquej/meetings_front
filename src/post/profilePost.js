@@ -1,46 +1,10 @@
 import React from "react";
-import moment from "moment";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import { checkToken } from "../utils/checkToken";
-
-const PostPage = (props)=>{
-    let {data,userId} = props;
-    return (
-        <div className="post-list">
-        {data.map((post) => (
-                <div className="post-item" key={post.id}>
-                    <b><a href={`/post/${post.id}`}>{post.title}</a></b>
-                    {post.likes.includes(userId)
-                        ?<img src="https://cdn-icons-png.flaticon.com/512/138/138533.png" style={{"width":"20px", "marginLeft":"10px"}} />
-                        :<img src="https://cdn-icons-png.flaticon.com/512/138/138454.png" style={{"width":"20px","marginLeft":"10px"}} />}
-                    { post.author.nickname===""
-                    ?(<p> unknown / {moment(post.created_at).format("YYYY-MM-DD")}</p>)
-                    :(<p>{post.author.nickname} / {moment(post.created_at).format("YYYY-MM-DD")}</p>)}
-                </div>
-        ))}
-        </div>
-    )
-}
-
-const RecuitPage = (props)=>{
-    let {data} = props;
-    return (
-        <div className="post-list text-center">
-        {data.map((recruitment) => (
-        <div className="post-item" key={recruitment.id}>
-            <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
-            { recruitment.author.nickname===""
-            ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
-            :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
-            <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
-        </div>
-))}
-</div>
-    )
-}
+import { PostPage,RecruitPage } from "../components/postPage";
 
 const LikePostAPI = ()=>{
     const accessToken = localStorage.getItem("access");
@@ -60,8 +24,8 @@ const LikePostAPI = ()=>{
         
         axios.get(`/post/profile/${userId}`,{params},
         {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
-                setData([...response.data]);
-                console.log(response.data)
+                setData([...response.data.results]);
+                console.log(response.data.results)
             }
         ).catch(error=>{
             if (error.response.status === 401){
@@ -96,8 +60,8 @@ const ApplyPostAPI = ()=>{
         
         axios.get(`/post/profile/${userId}`,{params},
         {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
-                setData([...response.data]);
-                console.log(response.data)
+                setData([...response.data.results]);
+                console.log(response.data.results)
             }
         ).catch(error=>{
             if (error.response.status === 401){
@@ -108,7 +72,7 @@ const ApplyPostAPI = ()=>{
     },[]);
 
     return (
-        <RecuitPage data={data} />
+        <RecruitPage data={data} />
     )
 }
 
@@ -128,10 +92,10 @@ const MyRecruitmentAPI = ()=>{
             userId = JSON.parse(localStorage.getItem('payload')).user_id;
         }
         
-        axios.get(`/post/profile/${userId}`,{params},
-        {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
-                setData([...response.data]);
-                console.log(response.data)
+        axios.get(`/post/profile/${userId}`,{params:{option:"recruit"}},
+        {headers:{Authorization: `Bearer ${accessToken}`}}).then(response => {
+                setData([...response.data.results]);
+                console.log(response.data.results)
             }
         ).catch(error=>{
             if (error.response.status === 401){
@@ -142,7 +106,7 @@ const MyRecruitmentAPI = ()=>{
     },[]);
 
     return (
-        <RecuitPage data={data} />
+        <RecruitPage data={data} />
     )
 }
 
@@ -163,8 +127,8 @@ const MyPostAPI = ()=>{
         
         axios.get(`/post/profile/${userId}`,
         {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
-            setData([...response.data]);
-            console.log(response.data)
+            setData([...response.data.results]);
+            console.log(response.data.results)
             }
         )
     },[]);

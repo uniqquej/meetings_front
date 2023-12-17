@@ -5,6 +5,7 @@ import axios from "axios"
 import moment from "moment";
 import "./post.css"
 
+import { RecruitPage } from "../components/postPage";
 import InputBox from "../components/input";
 import { SelectBox } from "../components/frame";
 import GroupSelector from "../components/groupSelector";
@@ -23,27 +24,27 @@ const RecruitmentAPI = ()=>{
 
     const searchKeyword = async(keyword)=>{
         let params = {search:keyword, category:category}
-        const res = await axios.get('/post/recruit',
+        const res = await axios.get('/recruit',
         {params});
         if (res.status === 200){
-            setData([...res.data]);
+            setData([...res.data.results]);
         }
     }
 
     useEffect(()=>{
         let params = {category:category};
-        axios.get('/post/recruit',{params}).then(
+        axios.get('/recruit',{params}).then(
             response => {
-                setData([...response.data]);
-                console.log(response)
+                setData([...response.data.results]);
+                console.log(response.data.results)
             }
         ).catch(error=>{
             console.error('error: ', error)
         })
     },[category]);
     return (
-        <>
-        <div className="post-list text-center">
+
+        <RecruitPage data={data}>
             <div>
                 <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
                 <button className="my-btn" onClick={()=>{
@@ -55,20 +56,9 @@ const RecruitmentAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
-        {data.map((recruitment) => (
-                <div className="post-item" key={recruitment.id}>
-                    <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
-                    { recruitment.author.nickname===""
-                    ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
-                    :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
-                    <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
-                </div>
-        ))}
-        </div>
-        </>
+    </RecruitPage>
     )
 }
-
 const RecruitmentDetailAPI = ()=>{
     const accessToken = localStorage.getItem("access");
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
@@ -99,7 +89,7 @@ const RecruitmentDetailAPI = ()=>{
     
 
     useEffect(()=>{
-        axios.get(`/post/recruit/${recruitId}`).then(
+        axios.get(`/recruit/${recruitId}`).then(
             response => {
                 console.log(response)
                 setCategoryName(response.data.category.category_name);
@@ -117,7 +107,7 @@ const RecruitmentDetailAPI = ()=>{
     },[]);
 
     const editRecruitment = async(number_of_recruits,title,content,category)=>{
-        const res = await axios.put(`/post/recruit/${recruitId}`, {
+        const res = await axios.put(`/recruit/${recruitId}`, {
             number_of_recruits,title,content,category
         },{
             headers: {
@@ -130,7 +120,7 @@ const RecruitmentDetailAPI = ()=>{
     }
 
     const applyRecruitment = async()=>{
-        const res = await axios.post(`/post/recruit/${recruitId}/applicate`,{},{
+        const res = await axios.post(`/recruit/${recruitId}/applicate`,{},{
             headers:{Authorization:`Bearer ${accessToken}`}
         })
         if(res.status === 201){
@@ -166,7 +156,7 @@ const RecruitmentDetailAPI = ()=>{
                     ?(<div>
                         <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
                         <button className="my-btn" onClick={()=>{
-                            axios.delete(`/post/recruit/${recruitId}`,{
+                            axios.delete(`/recruit/${recruitId}`,{
                                 headers:{Authorization:`Bearer ${accessToken}`}
                             }).then(response=>{if(response.status===204){
                                 navigate('/recruit')
@@ -209,7 +199,7 @@ const NewRecruitmentAPI = ()=>{
     }
 
     const writeRecruitment = async(category, title, content, number_of_recruits, group)=>{
-        const res = await axios.post('/post/recruit',{category,title,content,number_of_recruits,group},
+        const res = await axios.post('/recruit/',{category,title,content,number_of_recruits,group},
         {headers:{Authorization: `Bearer ${accessToken}`}})
 
         if(res.status===201){
