@@ -9,7 +9,7 @@ import { PostPage} from "../components/postPage";
 import { checkToken } from "../utils/checkToken";
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
-import { PostPageButton } from "../components/page";
+import { PageButton } from "../components/page";
 
 const postLike = async(postId)=>{
     const accessToken = localStorage.getItem("access");
@@ -91,7 +91,7 @@ const PostAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
-            <PostPageButton count={count} next={next} previous={previous} setData={setData}></PostPageButton>
+            <PageButton count={count} next={next} previous={previous} setData={setData} type="post"></PageButton>
         </PostPage>
     )
 }

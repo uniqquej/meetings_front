@@ -1,9 +1,9 @@
 import React from "react";
 import axios from "axios"
 
-const PostPageButton = (props)=>{
-    const {count, next, previous, setData} = props;
-    console.log("previous",previous);
+const PageButton = (props)=>{
+    const {count, next, previous, setData, type} = props;
+    
     const pageNumber = (count%10)!=0? Math.floor(count/10)+1 :(count/10);
     let currentPage = 1;
     
@@ -16,7 +16,7 @@ const PostPageButton = (props)=>{
     console.log('current : ',currentPage);
     const getPage = async(pageNum)=>{
         let params = {page:pageNum};
-        let res = await axios.get('/post/',{params});
+        let res = await axios.get(`/${type}/`,{params});
         console.log(res.data);
         if(res.status == 200){
             setData(res.data.results);
@@ -60,4 +60,4 @@ const Paging = ({children,props})=>{
     )
 }
 
-export {PostPageButton}
+export {PageButton}

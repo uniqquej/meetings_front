@@ -2,9 +2,9 @@ import React, {useState, useEffect} from "react"
 import {useParams, useNavigate} from "react-router-dom"
 import {useSelector, useDispatch} from "react-redux";
 import axios from "axios"
-import moment from "moment";
-import "./post.css"
 
+import "./post.css"
+import { PageButton } from "../components/page";
 import { RecruitPage } from "../components/postPage";
 import InputBox from "../components/input";
 import { SelectBox } from "../components/frame";
@@ -14,6 +14,9 @@ const RecruitmentAPI = ()=>{
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const category = useSelector((state)=> state.selectedCategory);
+    const [count, setCount] = useState(0);
+    const [next, setNext] = useState(null);
+    const [previous, setPrevious] = useState(null);
 
     const [data, setData] = useState([]);
     const [searchWord, setSearchWord] = useState("");
@@ -36,6 +39,13 @@ const RecruitmentAPI = ()=>{
         axios.get('/recruit',{params}).then(
             response => {
                 setData([...response.data.results]);
+                setCount(response.data.count);
+                if (response.data.next != null){
+                    setNext(response.data.next.split("=")[1]);
+                }
+                if (response.data.previous != null){
+                setPrevious(response.data.previous.split("=")[1]);
+                }
                 console.log(response.data.results)
             }
         ).catch(error=>{
@@ -56,6 +66,7 @@ const RecruitmentAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
+            <PageButton count={count} next={next} previous={previous} setData={setData} type="recruit"></PageButton>
     </RecruitPage>
     )
 }
