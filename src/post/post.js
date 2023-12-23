@@ -9,6 +9,7 @@ import { PostPage} from "../components/postPage";
 import { checkToken } from "../utils/checkToken";
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
+import { PostPageButton } from "../components/page";
 
 const postLike = async(postId)=>{
     const accessToken = localStorage.getItem("access");
@@ -29,6 +30,9 @@ const PostAPI = ()=>{
     const category = useSelector((state)=> state.selectedCategory);
 
     const navigate = useNavigate();
+    const [count, setCount] = useState(0);
+    const [next, setNext] = useState(null);
+    const [previous, setPrevious] = useState(null);
     const [data, setData] = useState([]);
     const [searchWord, setSearchWord] = useState("");
 
@@ -44,7 +48,6 @@ const PostAPI = ()=>{
         let params = {search:keyword, category:category}
         const res = await axios.get(`/post/`,
         {params});
-        console.log(res.data.results)
         if (res.status === 200){
             setData([...res.data.results]);
         }
@@ -57,8 +60,15 @@ const PostAPI = ()=>{
         
         let params = {category:category};
         axios.get('/post/',{params}).then(response => {
+                console.log(response.data)
                 setData([...response.data.results]);
-                console.log(response.data.results)
+                setCount(response.data.count);
+                if (response.data.next != null){
+                    setNext(response.data.next.split("=")[1]);
+                }
+                if (response.data.previous != null){
+                setPrevious(response.data.previous.split("=")[1]);
+                }
             }
         ).catch(error=>{
             if (error.response.status === 401){
@@ -81,6 +91,7 @@ const PostAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
+            <PostPageButton count={count} next={next} previous={previous} setData={setData}></PostPageButton>
         </PostPage>
     )
 }
