@@ -5,7 +5,7 @@ import {Layout} from './components/frame';
 import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
-import { LikePostAPI, ApplyPostAPI,MyPostAPI, MyRecruitmentAPI } from './post/profilePost';
+import {ProfilePostAPI } from './post/profilePost';
 import {GroupDetail, CreateGroup} from './group/group';
 import {MyToDoList} from './group/toDoList'
 import { Socket } from './chat/chat';
@@ -86,26 +86,12 @@ function App() {
                 <EditProfile/>
               </MyPageLayout>
           }/>
-          <Route path='/my/:userId/like' element={
+          <Route path='/my/:userId/:option' element={
               <MyPageLayout>
-                <LikePostAPI/>
+                <ProfilePostAPI/>
               </MyPageLayout>
           }/>
-          <Route path='/my/:userId/apply' element={
-              <MyPageLayout>
-                <ApplyPostAPI/>
-              </MyPageLayout>
-          }/>
-          <Route path='/my/:userId/post' element={
-              <MyPageLayout>
-                <MyPostAPI/>
-              </MyPageLayout>
-          }/>
-          <Route path='/my/:userId/recruitment' element={
-              <MyPageLayout>
-                <MyRecruitmentAPI/>
-              </MyPageLayout>
-          }/>
+          
         </Routes>  
     </BrowserRouter>
   );

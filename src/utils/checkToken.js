@@ -6,12 +6,14 @@ const checkToken = (accessToken)=>{
             localStorage.removeItem('access');
             localStorage.removeItem('payload');
             console.log('access 기간 만료');
-            window.location = 'login'
+            window.location = '/login'
+            return; 
         }
-        else return true;
+        else return JSON.parse(localStorage.getItem('payload')).user_id;
     }
     console.log('access 없음');
-    window.location = 'login'
+    window.location = '/login';
+    return; 
 }
 
 export {checkToken}

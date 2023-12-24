@@ -43,11 +43,13 @@ const CommentPageButton = (props)=>{
 
 const PageButton = (props)=>{
     //post, recruitment page
-    const {count, next, previous, setData, type} = props;
+    let pageUrl;
+    const {count, next, previous, setData, url} = props;
+    const accessToken= localStorage.getItem("access");
     const pageSize = 10;
     const pageNumber = (count%pageSize)!=0? Math.floor(count/pageSize)+1 :(count/pageSize);
     let currentPage = 1;
-    
+    console.log('uuuu',url)
     if (next != null){
         currentPage = parseInt(next, 10)-1;
     }else if(previous != null){
@@ -55,8 +57,15 @@ const PageButton = (props)=>{
     }
 
     const getPage = async(pageNum)=>{
-        let params = {page:pageNum};
-        let res = await axios.get(`/${type}/`,{params});
+        if (url.includes("option")){
+            pageUrl = url + `&page=${pageNum}`
+        }
+        else {
+            pageUrl = url +`?page=${pageNum}`
+        }
+        let res = await axios.get(`${pageUrl}`,{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        });
         console.log(res.data);
         if(res.status == 200){
             setData(res.data.results);

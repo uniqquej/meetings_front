@@ -66,7 +66,7 @@ const RecruitmentAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
-            <PageButton count={count} next={next} previous={previous} setData={setData} type="recruit"></PageButton>
+            <PageButton count={count} next={next} previous={previous} setData={setData} url="/recruit/"></PageButton>
     </RecruitPage>
     )
 }
