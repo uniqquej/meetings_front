@@ -9,7 +9,7 @@ import { PostPage} from "../components/postPage";
 import { checkToken } from "../utils/checkToken";
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
-import { PageButton } from "../components/page";
+import { PageButton,CommentPageButton } from "../components/page";
 
 const postLike = async(postId)=>{
     const accessToken = localStorage.getItem("access");
@@ -99,6 +99,9 @@ const PostAPI = ()=>{
 
 const Comments = (probs)=>{
     const accessToken = localStorage.getItem("access");
+    const [count, setCount] = useState(0);
+    const [next, setNext] = useState(null);
+    const [previous, setPrevious] = useState(null);
     const [comments, setComments]=useState([]);
     const [comment, setComment]=useState("");
 
@@ -109,7 +112,15 @@ const Comments = (probs)=>{
         axios.get(`/post/${probs.postId}/comment`,{headers:{Authorization:`Bearer ${accessToken}`}})
             .then(response=>{
                 console.log('comment',response)
-                setComments([...response.data.results])})
+                setComments([...response.data.results])
+                setCount(response.data.count);
+                if (response.data.next != null){
+                    setNext(response.data.next.split("=")[1]);
+                }
+                if (response.data.previous != null){
+                setPrevious(response.data.previous.split("=")[1]);
+                }})
+                
     },[]);
     
     const createComment = (postId,comment)=>{
@@ -118,8 +129,7 @@ const Comments = (probs)=>{
                 })
                 .then(response=>{
                     if(response.status===201){
-                        setComments([...comments,{author:response.data.author, comment:response.data.comment, created_at: response.data.created_at}]);
-                        setComment("");
+                        window.location.reload();
                     }
                 });
     }
@@ -132,13 +142,13 @@ const Comments = (probs)=>{
             {comments.map((data)=>(
                <div key={data.id} className="mb-3 row">   
                 <label htmlFor={data.id} className="col-sm-2 col-form-label text-center">{data.author.nickname}</label>
-                <div className="col-sm-10 comment">
-                        <p>{data.comment}</p>
-                        <p>{moment(data.created_at).format('YYYY-MM-DD HH:MM')}</p>
-                       
+                    <div className="col-sm-10 comment">
+                            <p>{data.comment}</p>
+                            <p>{moment(data.created_at).format('YYYY-MM-DD HH:MM')}</p>
+                    </div>
                 </div>
-             </div>
             ))}
+            <CommentPageButton count={count} next={next} previous={previous} setComments={setComments}></CommentPageButton>
         </div>
     )
 }

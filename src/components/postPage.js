@@ -30,10 +30,10 @@ const RecruitPage = (props)=>{
         {data.map((recruitment) => (
         <div className="post-item" key={recruitment.id}>
             <b><a href={`/recruit/${recruitment.id}`}>{recruitment.title}</a></b>
+            <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
             { recruitment.author.nickname===""
             ?(<p> unknown / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)
             :(<p>{recruitment.author.nickname} / {moment(recruitment.created_at).format("YYYY-MM-DD")}</p>)}
-            <p>({recruitment.applicant_count}/{recruitment.number_of_recruits})</p>
         </div>
 ))}
 </div>
