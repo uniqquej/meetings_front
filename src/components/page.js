@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios"
 import { useParams } from "react-router-dom";
 
@@ -8,15 +8,12 @@ const CommentPageButton = (props)=>{
     const {postId} = useParams();
  
     const pageNumber = (count%pageSize)!=0? Math.floor(count/pageSize)+1 :(count/pageSize);
-    let currentPage = 1;
-    console.log("comment detail : ",next,previous,count)
-    if (next != null){
-        currentPage = parseInt(next, 10)-1;
-    }else if(previous != null){
-        currentPage = parseInt(previous, 10)+1;
-    }
+    const [currentPage, setCurruntPage] = useState(1);
+    const [startPageNum, setStartPageNum] = useState(1);
+    
 
     const getComments = async(pageNum)=>{
+        setCurruntPage(pageNum);
         let params = {page:pageNum};
         let res = await axios.get(`/post/${postId}/comment`,{params});
         console.log("comment",res.data);
@@ -26,16 +23,28 @@ const CommentPageButton = (props)=>{
     }
     const renderPageButton = ()=>{
         const pages = [];
-        for(let i=1; i<=pageNumber;i++){
+        let endPageNum = startPageNum+4;
+        if(startPageNum+4 > pageNumber){
+            endPageNum = pageNumber;
+        }
+
+        for(let i=startPageNum; i<=endPageNum;i++){
             
             pages.push(
-                <li class="page-item"><a class="page-link" onClick={()=>{getComments(i)}}>{i}</a></li>
+                <li className={currentPage===i ?"page-item active" :"page-item"}>
+                    <a className="page-link" onClick={()=>{getComments(i)}}>{i}</a>
+                </li>
             )
         }
         return pages;
     }
+
+    useEffect(()=>{
+        getComments(currentPage);
+    },[currentPage])
+
     return (
-        <Paging props = {{next}}>
+        <Paging props = {{pageNumber,currentPage, setStartPageNum,setCurruntPage}}>
             {renderPageButton()}
         </Paging>
     )
@@ -48,15 +57,11 @@ const PageButton = (props)=>{
     const accessToken= localStorage.getItem("access");
     const pageSize = 10;
     const pageNumber = (count%pageSize)!=0? Math.floor(count/pageSize)+1 :(count/pageSize);
-    let currentPage = 1;
-    console.log('uuuu',url)
-    if (next != null){
-        currentPage = parseInt(next, 10)-1;
-    }else if(previous != null){
-        currentPage = parseInt(previous, 10)+1;
-    }
+    const [currentPage, setCurruntPage] = useState(1);
+    const [startPageNum, setStartPageNum] = useState(1);
 
     const getPage = async(pageNum)=>{
+        setCurruntPage(pageNum);
         if (url.includes("option")){
             pageUrl = url + `&page=${pageNum}`
         }
@@ -73,36 +78,72 @@ const PageButton = (props)=>{
     }
     const renderPageButton = ()=>{
         const pages = [];
-        for(let i=1; i<=pageNumber;i++){
-            
+        let endPageNum = startPageNum+4;
+        if (startPageNum+4 > pageNumber){
+            endPageNum = pageNumber;
+        }
+
+        for(let i=startPageNum; i<=endPageNum;i++){
             pages.push(
-                <li class="page-item"><a class="page-link" onClick={()=>{getPage(i)}}>{i}</a></li>
+                <li className={currentPage===i ? "page-item active":"page-item"}>
+                    <a className="page-link" onClick={()=>{getPage(i)}}>{i}</a>
+                </li>
             )
         }
         return pages;
     }
+    useEffect(()=>{
+        getPage(currentPage);
+    },[currentPage])
+    
     return (
-        <Paging props = {{next}}>
+        <Paging props = {{pageNumber, currentPage, setStartPageNum, setCurruntPage}}>
             {renderPageButton()}
         </Paging>
     )
 }
 
-const Paging = ({children,props})=>{
+const Paging = ({children, props})=>{
+    const {pageNumber, currentPage, setStartPageNum,setCurruntPage} = props;
+    
+    const nextPage = ()=>{
+        if(currentPage%5===0){
+            setStartPageNum(currentPage+1);
+            setCurruntPage(currentPage+1);
+        }else{
+            setCurruntPage(currentPage+1);
+        }
+    }
+
+    const previousPage = ()=>{
+        if(currentPage%5===1){
+            setStartPageNum(currentPage-5);
+            setCurruntPage(currentPage-1);
+        }else{
+            setCurruntPage(currentPage-1);
+        }
+    }
+
     return(
         <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item">
-                <a class="page-link" href="#" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-                </li>
+            <ul className="pagination">
+                {currentPage !== 1
+                ? (  <li className="page-item">
+                        <a className="page-link" onClick={()=>{previousPage()}} aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>)
+                : null
+                }
                 {children}
-                <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                </li>
+                {currentPage !== pageNumber
+                ? (<li className="page-item">
+                        <a className="page-link" onClick={()=>{nextPage()}} aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>)
+                : null
+                }
             </ul>
         </nav>
     )

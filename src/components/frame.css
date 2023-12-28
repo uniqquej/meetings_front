@@ -117,10 +117,33 @@
 }
 
 .pagination {
+  margin-top: 5px;
   display: flex;
   justify-content: center;
+  cursor: pointer;
 }
-.pagination>li>a{
+
+.pagination > li > a {
+    background-color: white;
+    color: #282c34;
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover {
   color: #282c34;
-  font-size: large;
+  background-color: #eee;
+  border-color: #ddd;
+}
+
+.pagination > .active > a {
+  color: white;
+  background-color: #282c34;
+  border: solid 1px #282c34;
+}
+
+.pagination > .active > a:hover {
+  background-color: #282c34;
+  border: solid 1px #282c34;
 }
