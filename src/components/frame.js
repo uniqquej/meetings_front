@@ -33,6 +33,11 @@ const Layout = ({children})=>{
     if(checkToken(accessToken)){
         userId = JSON.parse(localStorage.getItem('payload')).user_id;
     }
+    const logout = ()=>{
+        navigate('login');
+        localStorage.removeItem("access");
+        localStorage.removeItem("payload");
+    }
 
     return (
         <div className="App">
@@ -40,7 +45,7 @@ const Layout = ({children})=>{
                 <h2><a href="/" id="logo">MEETING</a></h2>
                 <div>
                 <button className="my-btn" onClick={()=>{navigate(`/my/${userId}`)}}>마이페이지</button>
-                <button className="my-btn">로그아웃</button>
+                <button className="my-btn" onClick={()=>{logout()}}>로그아웃</button>
                 </div>
             </div>
             <Provider store={store}>

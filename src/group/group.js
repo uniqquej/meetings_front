@@ -76,7 +76,7 @@ const Notice = (probs)=>{
                     <button className="list-btn" onClick={() => toggleModal(notice.id)}>{notice.title}</button>
                     {modalOpen[notice.id] && <NoticeDetailModal noticeId = {notice.id}
                                                       title={notice.title} content={notice.content}
-                                                      date={notice.created_at}
+                                                      date={notice.updated_at}
                                                       closeModal={toggleModal} isLeader={userId===probs.leader}/>}
                 </div>
             ))}
@@ -133,8 +133,20 @@ const Meeting = (probs)=>{
 }
 
 const ToDoList = (probs)=>{
+    const accessToken = localStorage.getItem("access");
     const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const navigate = useNavigate();
+
+    const checkToDo = async(id,is_done)=>{
+        const res = await axios.put(`/group/to-do/${id}/check`,{is_done},{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        })
+        if(res.status===200){
+            window.location.reload();
+        }
+
+    }
+    
     return (
         <div className="group-todo text-center">
             <div style={{display:"flex",flexDirection:"row"}}>
@@ -154,10 +166,10 @@ const ToDoList = (probs)=>{
                     ?(  data.todo_set.map(todo=>(
                             <div className="form-check">
                                 {todo.is_done
-                                    ?(<input className="form-check-input" type="checkbox" value="" id="flexCheckDefault" checked/>)
-                                    :(<input className="form-check-input" type="checkbox" value="" id="flexCheckDefault"/>)
+                                    ?(<input onClick={()=>{checkToDo(todo.id,!todo.is_done)}} className="form-check-input" type="checkbox" id="flexCheck" checked/>)
+                                    :(<input onClick={()=>{checkToDo(todo.id,!todo.is_done)}}className="form-check-input" type="checkbox" id="flexCheck"/>)
                                 }
-                                <label className="form-check-label" for="flexCheckDefault">
+                                <label className="form-check-label" for="flexCheck">
                                 {todo.task}
                                 </label>
                             </div>

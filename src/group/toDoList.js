@@ -19,6 +19,15 @@ const MyToDoList = ()=>{
     const [data, setData] = useState([""]);
     const [dates, setDates] = useState([""]);
 
+    const checkToDo = async(id,is_done)=>{
+        const res = await axios.put(`/group/to-do/${id}/check`,{is_done},{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        })
+        if(res.status===200){
+            window.location.reload();
+        }
+
+    }
     useEffect(()=>{
         axios.get(`/group/${groupId}/my-to-do`,{
             headers:{Authorization:`Bearer ${accessToken}`}
@@ -62,8 +71,8 @@ const MyToDoList = ()=>{
                     {info.todo_set.map((todo) => (
                         <div className="form-check">
                         {todo.is_done
-                            ?(<input className="form-check-input" type="checkbox" value={todo.id} id="flexCheckDefault" checked/>)
-                            :(<input className="form-check-input" type="checkbox" value={todo.id} id="flexCheckDefault"/>)
+                            ?(<input className="form-check-input" onClick={()=>{checkToDo(todo.id,!todo.is_done)}} type="checkbox" value={todo.id} id="flexCheckDefault" checked/>)
+                            :(<input className="form-check-input" onClick={()=>{checkToDo(todo.id,!todo.is_done)}} type="checkbox" value={todo.id} id="flexCheckDefault"/>)
                         }
                         <label className="form-check-label" for="flexCheckDefault">
                         {todo.task}
