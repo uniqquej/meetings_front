@@ -79,6 +79,7 @@ const PostAPI = ()=>{
     },[category]);
 
     return (
+        <>
         <PostPage data={data} userId={userId}>
             <div className="text-center">
                 <button className="my-btn" onClick={()=>{navigate('/new/post')}}>글 쓰기</button>
@@ -91,8 +92,9 @@ const PostAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
-            <PageButton count={count} next={next} previous={previous} setData={setData} url="/post/"></PageButton>
         </PostPage>
+        <PageButton count={count} next={next} previous={previous} setData={setData} url="/post/"></PageButton>
+        </>
     )
 }
 
@@ -142,7 +144,7 @@ const Comments = (probs)=>{
             {comments.map((data)=>(
                <div key={data.id} className="mb-3 row">   
                 <label htmlFor={data.id} className="col-sm-2 col-form-label text-center">{data.author.nickname}</label>
-                    <div className="col-sm-10 comment">
+                    <div className="col-sm-8 comment">
                             <p>{data.comment}</p>
                             <p>{moment(data.created_at).format('YYYY-MM-DD HH:MM')}</p>
                     </div>

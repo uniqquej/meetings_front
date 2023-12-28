@@ -9,6 +9,7 @@
 }
 
 .App {
+    overflow: auto;
     background-color: #282c34;
     height: 100vh;
     display: grid;
@@ -58,8 +59,12 @@
     width: 100%;
 
   }
-  .nav-item{
+  .nav{
     width: 240px;
+  }
+  .nav-item{
+    width: 100%;
+    font-size: 18px;
     text-align: center;
     padding: 3px;
     border: none;
@@ -109,4 +114,13 @@
     border: 1px solid #282c34;
     color: white;
     border-radius: 5px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+}
+.pagination>li>a{
+  color: #282c34;
+  font-size: large;
 }

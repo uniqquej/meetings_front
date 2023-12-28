@@ -77,7 +77,7 @@ const Nav = ()=>{
     },[]);
 
     return(
-        <ul className="nav flex-column">
+        <div className="nav flex-column">
             {  categories.length > 0 &&
                 categories.map((category)=>(
                     <NavItem
@@ -88,7 +88,7 @@ const Nav = ()=>{
                     onClick={toggleBtn}/>
                 ))
             }
-        </ul>
+        </div>
     );
 }
 

@@ -19,7 +19,7 @@ const ProfilePostAPI = ()=>{
     let url = `/post/profile/${userId}?option=${option}`
     useEffect(()=>{
         console.log(userId,option,url)
-        axios.get(`${url}`,
+        axios.get(url,
         {headers:{Authorization:`Bearer ${accessToken}`}}).then(response => {
                 setData([...response.data.results]);
                 setCount(response.data.count);
@@ -40,16 +40,20 @@ const ProfilePostAPI = ()=>{
     },[option]);
 
     if (option==="post" | option === "like"){
-        return (  
+        return (
+        <>
             <PostPage data={data} userId={userId} >
-                <PageButton count={count} next={next} previous={previous} setData={setData} url={url}></PageButton>
             </PostPage>
+            <PageButton count={count} next={next} previous={previous} setData={setData} url={url}></PageButton>
+        </>
         )
     } else {
         return (
+        <>
             <RecruitPage data={data}>
-                <PageButton count={count} next={next} previous={previous} setData={setData} url={url}></PageButton>
             </RecruitPage>
+            <PageButton count={count} next={next} previous={previous} setData={setData} url={url}></PageButton>
+        </>
         )
     }
 }

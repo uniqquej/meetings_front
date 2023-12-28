@@ -53,7 +53,7 @@ const RecruitmentAPI = ()=>{
         })
     },[category]);
     return (
-
+    <>
         <RecruitPage data={data}>
             <div>
                 <button className="my-btn" onClick={()=>{navigate('/new/recruit')}}>모집공고 쓰기</button>
@@ -66,8 +66,9 @@ const RecruitmentAPI = ()=>{
                     <button className="btn btn-outline-secondary" type="button" onClick={()=>{searchKeyword(searchWord)}}>Search</button>
                 </div>
             </div>
-            <PageButton count={count} next={next} previous={previous} setData={setData} url="/recruit/"></PageButton>
-    </RecruitPage>
+        </RecruitPage>
+        <PageButton count={count} next={next} previous={previous} setData={setData} url="/recruit/"></PageButton>
+    </>
     )
 }
 const RecruitmentDetailAPI = ()=>{
