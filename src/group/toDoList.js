@@ -8,13 +8,10 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import "../group/group.css"
-// import InputBox from "../components/input";
-
 
 const MyToDoList = ()=>{
     const accessToken = localStorage.getItem("access");
     const [value, onChange] = useState(new Date());
-    // const navigate = useNavigate();
     const {groupId} = useParams();
     const [data, setData] = useState([""]);
     const [dates, setDates] = useState([""]);

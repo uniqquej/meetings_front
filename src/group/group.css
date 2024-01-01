@@ -141,3 +141,6 @@
     width: 50%;
     margin-bottom: 10px;
 }
+.todo-title>span{
+    font-size: 25px;
+}
