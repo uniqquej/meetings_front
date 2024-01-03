@@ -12,6 +12,8 @@ import { Socket } from './chat/chat';
 import { MyPageLayout} from './components/myPageFrame';
 import { EditProfile } from './user/profile'; 
 
+import Lastweek from './group/rateChart';
+
 function App() {
   return (
     <BrowserRouter>

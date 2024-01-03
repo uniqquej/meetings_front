@@ -161,7 +161,7 @@ const ToDoList = (probs)=>{
             })
             .map((data)=>(
                 <div className="todo-Box">
-                    <div className="todo-title">
+                    <div className="todo-title ve">
                         <span><b>{data.writer.nickname}</b></span>
                         <p>달성률 : {data.progress_rate} %</p> 
                     </div>

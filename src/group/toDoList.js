@@ -8,6 +8,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import "../group/group.css"
+import Lastweek from "./rateChart";
 
 const MyToDoList = ()=>{
     const accessToken = localStorage.getItem("access");
@@ -81,7 +82,7 @@ const MyToDoList = ()=>{
             </div>
 
             <div className="to-do-detail">
-                        달성률 백엔드 완성하기
+                <Lastweek></Lastweek>
             </div>
             <AddTodo groupId={groupId} value={value}/>
         </div>

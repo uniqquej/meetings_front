@@ -110,10 +110,12 @@
     grid-area : calender;
 }
 .calender{
+    margin-top: 5px;
     width: 100%;
     min-width: 60%; 
     max-width: 100%;
     height: 100%;
+    border: 0;
 }
 
 .to-do-list{
@@ -127,7 +129,6 @@
 .to-do-detail{
     grid-area: detail;
     padding-left: 20px;
-    background-color: blue;
 }
 .to-do-add{
     grid-area: add-todo;
@@ -143,4 +144,7 @@
 }
 .todo-title>span{
     font-size: 25px;
+}
+.chart{
+    height: 500px;
 }
