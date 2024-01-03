@@ -8,7 +8,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import "../group/group.css"
-import Lastweek from "./rateChart";
+import ToDoListRate from "./rateChart";
 
 const MyToDoList = ()=>{
     const accessToken = localStorage.getItem("access");
@@ -16,6 +16,7 @@ const MyToDoList = ()=>{
     const {groupId} = useParams();
     const [data, setData] = useState([""]);
     const [dates, setDates] = useState([""]);
+    const [month,setMonth] = useState(value.getMonth()+1);
 
     const checkToDo = async(id,is_done)=>{
         const res = await axios.put(`/group/to-do/${id}/check`,{is_done},{
@@ -81,10 +82,15 @@ const MyToDoList = ()=>{
                ))}   
             </div>
 
-            <div className="to-do-detail">
-                <Lastweek></Lastweek>
-            </div>
             <AddTodo groupId={groupId} value={value}/>
+            <div className="to-do-detail">
+                <div>
+                    <button className="my-btn">이전 달</button>
+                    <button className="my-btn">{month}</button>
+                    <button className="my-btn">다음 달</button>
+                </div>
+                <ToDoListRate></ToDoListRate>
+            </div>
         </div>
     )
 }

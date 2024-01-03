@@ -24,7 +24,7 @@ ChartJS.register(
   Legend
 );
 
-function Lastweek() {
+function ToDoListRate() {
   const {groupId} = useParams();
   const [rateData, setRateData] = useState([]);
   const accessToken = localStorage.getItem("access");
@@ -77,4 +77,4 @@ function Lastweek() {
   );
 }
 
-export default Lastweek;
+export default ToDoListRate;

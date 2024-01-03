@@ -128,7 +128,10 @@
 
 .to-do-detail{
     grid-area: detail;
-    padding-left: 20px;
+    padding: 20px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
 }
 .to-do-add{
     grid-area: add-todo;
@@ -146,5 +149,5 @@
     font-size: 25px;
 }
 .chart{
-    height: 500px;
+   width: 86%;
 }
