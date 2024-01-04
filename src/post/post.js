@@ -58,8 +58,13 @@ const PostAPI = ()=>{
             navigate('/login');
         }
         
-        let params = {category:category};
-        axios.get('/post/',{params}).then(response => {
+        let config = {
+            headers:{Authorization:`Bearer ${accessToken}`},
+            params:{
+                category:category
+            }
+        }
+        axios.get('/post/',config).then(response => {
                 console.log(response.data)
                 setData([...response.data.results]);
                 setCount(response.data.count);
