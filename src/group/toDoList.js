@@ -17,7 +17,8 @@ const MyToDoList = ()=>{
     const [data, setData] = useState([""]);
     const [dates, setDates] = useState([""]);
     const [month,setMonth] = useState(value.getMonth()+1);
-
+    const today = moment(new Date()).format("YYYY-MM-DD");
+    
     const checkToDo = async(id,is_done)=>{
         const res = await axios.put(`/group/to-do/${id}/check`,{is_done},{
             headers:{Authorization:`Bearer ${accessToken}`}
@@ -68,16 +69,14 @@ const MyToDoList = ()=>{
                     <p className="text-center"><b>{info.date}</b></p>
                     <p className="text-center"><b>{moment(info.date).lang("ko").format('dddd')}</b></p>
                     {info.todo_set.map((todo) => (
-                        <div className="form-check">
-                        {todo.is_done
-                            ?(<input className="form-check-input" onClick={()=>{checkToDo(todo.id,!todo.is_done)}} type="checkbox" value={todo.id} id="flexCheckDefault" checked/>)
-                            :(<input className="form-check-input" onClick={()=>{checkToDo(todo.id,!todo.is_done)}} type="checkbox" value={todo.id} id="flexCheckDefault"/>)
-                        }
-                        <label className="form-check-label" for="flexCheckDefault">
-                        {todo.task}
-                        </label>
-                        </div>
-                    ))}
+                            <div className="form-check">
+                                <input className="form-check-input" onClick={()=>{checkToDo(todo.id,!todo.is_done)}} type="checkbox" value={todo.id} id="flexCheckDefault" 
+                                    checked={todo.is_done?true:false} disabled={info.date !== today ?true:false}/>
+                                <label className="form-check-label" for="flexCheckDefault">
+                                {todo.task}
+                                </label>
+                            </div>
+                        ))}
                 </div>
                ))}   
             </div>

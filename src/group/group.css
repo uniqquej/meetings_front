@@ -63,8 +63,16 @@
     border: 1px solid rgb(227, 223, 223);
 }
 
-.todo-Box{
+.todo-box{
     border: 1px solid rgb(227, 223, 223);
+    color: rgb(93, 91, 91);
+    min-width: 20%;
+    padding: 5px;
+}
+.my-todo-box{
+    border: 1px solid white;
+    background-color: rgb(51, 57, 70);
+    color: white;
     min-width: 20%;
     padding: 5px;
 }
@@ -146,8 +154,9 @@
     margin-bottom: 10px;
 }
 .todo-title>span{
-    font-size: 25px;
+    font-size: 23px;
 }
+
 .chart{
    width: 86%;
 }

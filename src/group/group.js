@@ -152,7 +152,7 @@ const ToDoList = (probs)=>{
             <div style={{display:"flex",flexDirection:"row"}}>
                 <h4 style={{marginRight:"10px"}}>{'<'+'to do list'+'>'}</h4>
                 <h4 style={{marginRight:"10px"}}>{moment().format('YYYY-MM-DD')} </h4>
-                <button className="my-btn" onClick={()=>{navigate(`/group/${probs.groupId}/to-do`)}}>할 일 추가하기</button>
+                <button className="my-btn" onClick={()=>{navigate(`/group/${probs.groupId}/to-do`)}}>to do list 관리</button>
             </div>
             <div className="group-todo-list">
             {probs.toDoList.filter((todo)=>{
@@ -160,8 +160,8 @@ const ToDoList = (probs)=>{
                 return todo.date === today
             })
             .map((data)=>(
-                <div className="todo-Box">
-                    <div className="todo-title ve">
+                <div className={data.writer.id===userId?"my-todo-box":"todo-box"}>
+                    <div className="todo-title">
                         <span><b>{data.writer.nickname}</b></span>
                         <p>달성률 : {data.progress_rate} %</p> 
                     </div>
