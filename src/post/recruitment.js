@@ -9,8 +9,11 @@ import { RecruitPage } from "../components/postPage";
 import InputBox from "../components/input";
 import { SelectBox } from "../components/frame";
 import GroupSelector from "../components/groupSelector";
+import { checkToken } from "../utils/checkToken";
 
 const RecruitmentAPI = ()=>{
+    let userId;
+    const accessToken = localStorage.getItem("access");
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const category = useSelector((state)=> state.selectedCategory);
@@ -34,9 +37,16 @@ const RecruitmentAPI = ()=>{
         }
     }
 
+    userId = checkToken(accessToken);
+
     useEffect(()=>{
-        let params = {category:category};
-        axios.get('/recruit',{params}).then(
+        let config = {
+            headers:{Authorization:`Bearer ${accessToken}`},
+            params:{
+                category:category
+            }
+        }
+        axios.get('/recruit',config).then(
             response => {
                 setData([...response.data.results]);
                 setCount(response.data.count);
@@ -67,7 +77,7 @@ const RecruitmentAPI = ()=>{
                 </div>
             </div>
         </RecruitPage>
-        <PageButton count={count} next={next} previous={previous} setData={setData} url="/recruit/"></PageButton>
+        <PageButton count={count} setData={setData} url="/recruit/"></PageButton>
     </>
     )
 }
@@ -122,12 +132,20 @@ const RecruitmentDetailAPI = ()=>{
         const res = await axios.put(`/recruit/${recruitId}`, {
             number_of_recruits,title,content,category
         },{
-            headers: {
-                Authorization:`Bearer ${accessToken}`
-            }
+            headers: {Authorization:`Bearer ${accessToken}`}
         })
+
         if(res.status===202){
             window.location.reload();
+        }
+    }
+    const deleteRecruitment = async(recruitId)=>{
+        const res = await axios.delete(`/recruit/${recruitId}`,{
+            headers : {Authorization:`Bearer ${accessToken}`}
+        })
+
+        if(res.status===204){
+            navigate('/recruit')
         }
     }
 
@@ -167,13 +185,7 @@ const RecruitmentDetailAPI = ()=>{
                     {userId===author
                     ?(<div>
                         <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
-                        <button className="my-btn" onClick={()=>{
-                            axios.delete(`/recruit/${recruitId}`,{
-                                headers:{Authorization:`Bearer ${accessToken}`}
-                            }).then(response=>{if(response.status===204){
-                                navigate('/recruit')
-                            }})
-                        }}>삭제하기</button>
+                        <button className="my-btn" onClick={()=>{deleteRecruitment(recruitId)}}>삭제하기</button>
                     </div>)
                     :(!checkApplicate?<button className="my-btn" onClick={applyRecruitment}>지원 하기</button>
                                     :<button className="my-btn" onClick={applyRecruitment}>지원 완료</button>)}

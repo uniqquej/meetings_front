@@ -41,9 +41,7 @@ const PostAPI = ()=>{
         setSearchWord(event.currentTarget.value);
     }
 
-    if(checkToken(accessToken)){
-        userId = JSON.parse(localStorage.getItem('payload')).user_id;
-    }
+    userId = checkToken(accessToken)
 
     const searchKeyword = async(keyword)=>{
         let params = {search:keyword, category:category}
@@ -99,7 +97,7 @@ const PostAPI = ()=>{
                 </div>
             </div>
         </PostPage>
-        <PageButton count={count} next={next} previous={previous} setData={setData} url="/post/"></PageButton>
+        <PageButton count={count} setData={setData} url="/post/"></PageButton>
         </>
     )
 }
