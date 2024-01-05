@@ -53,7 +53,7 @@ const CommentPageButton = (props)=>{
 const PageButton = (props)=>{
     //post, recruitment page
     let pageUrl;
-    const {count, next, previous, setData, url} = props;
+    const {count, setData, url} = props;
     const accessToken= localStorage.getItem("access");
     const pageSize = 10;
     const pageNumber = (count%pageSize)!=0? Math.floor(count/pageSize)+1 :(count/pageSize);

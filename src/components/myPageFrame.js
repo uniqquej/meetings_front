@@ -24,7 +24,7 @@ const MyPageLayout = ({children})=>{
         userId = JSON.parse(localStorage.getItem('payload')).user_id;
     }
     const logout = ()=>{
-        navigate('login');
+        navigate('/login');
         localStorage.removeItem("access");
         localStorage.removeItem("payload");
     }
