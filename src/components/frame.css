@@ -116,6 +116,24 @@
     border-radius: 5px;
 }
 
+.my-modal-comment{
+  padding: 5px;
+  width: 50%;
+  height: 20%;
+  z-index: 999;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  background-color: #282c34;
+  border: 1px solid #282c34;
+  color: white;
+  border-radius: 5px;
+
+  text-align: center;
+}
+
 .pagination {
   margin-top: 5px;
   display: flex;

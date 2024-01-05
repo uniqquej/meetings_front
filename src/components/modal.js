@@ -106,4 +106,35 @@ const NoticeDetailModal = (probs)=>{
     )
 }
 
-export {NoticeDetailModal, NewNoticeModal}
+const EditCommetModal = (props)=>{
+    const {closeModal,comment,commentId} = props;
+    const [newComment, setNewComment] = useState(comment);
+    
+    const onCommentHandler = (event)=>{
+        setNewComment(event.currentTarget.value);
+    }
+    
+    const editComment = (commentId)=>{
+        const accessToken = localStorage.getItem('access');
+
+        axios.put(`/post/comment/${commentId}`,{comment:newComment},
+        {headers:{Authorization:`Bearer ${accessToken}`}})
+        .then(response=>{if(response.status===202){
+                            window.location.reload();
+                            closeModal(commentId);
+                        }})
+    }
+    return (
+        <div className="my-modal-comment">
+            <div>
+                <InputBox readOnly={false} name="modalComment" value={newComment} labelName="comment 수정" onChange={onCommentHandler}/>
+            </div>
+            <div>
+                <button className="my-btn" onClick={()=>{editComment(commentId)}}>저장하기</button>
+                <button className="my-btn" onClick={()=>{closeModal(commentId)}}>닫기</button>
+            </div> 
+        </div>                
+    )
+}
+
+export {NoticeDetailModal, NewNoticeModal, EditCommetModal}

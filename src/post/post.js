@@ -10,6 +10,7 @@ import { checkToken } from "../utils/checkToken";
 import { SelectBox } from "../components/frame";
 import InputBox from "../components/input";
 import { PageButton,CommentPageButton } from "../components/page";
+import { EditCommetModal } from "../components/modal";
 
 const postLike = async(postId)=>{
     const accessToken = localStorage.getItem("access");
@@ -106,11 +107,20 @@ const PostAPI = ()=>{
 
 const Comments = (probs)=>{
     const accessToken = localStorage.getItem("access");
+    const userId = JSON.parse(localStorage.getItem('payload')).user_id;
     const [count, setCount] = useState(0);
     const [next, setNext] = useState(null);
     const [previous, setPrevious] = useState(null);
     const [comments, setComments]=useState([]);
     const [comment, setComment]=useState("");
+    const [modalOpen, setModalOpen] = useState({});
+
+    const toggleModal = (commentId) => {
+      setModalOpen(prevState => ({
+        ...prevState,
+        [commentId]: !prevState[commentId] || false,
+      }));
+    };
 
     const onCommentHandler = (event)=>{
         setComment(event.currentTarget.value)
@@ -140,19 +150,42 @@ const Comments = (probs)=>{
                     }
                 });
     }
+    
+    const deleteComment=(commentId)=>{
+        axios.delete(`/post/comment/${commentId}`,{
+            headers:{Authorization:`Bearer ${accessToken}`}
+        }).then(response=>{
+            if(response.status===204){
+                window.location.reload();
+                alert('삭제완료');
+            }
+        })
+    }
+
     return(
         <div className="comments-box">
             <div className="text-center">
                 <InputBox labelName="comment" value={comment} readOnly={false} onChange={onCommentHandler} placeholder="댓글을 남겨주세요"/>
                 <button className="my-btn" onClick={()=>{createComment(probs.postId,comment)}}>댓글 달기</button>
             </div>
+
             {comments.map((data)=>(
                <div key={data.id} className="mb-3 row">   
                 <label htmlFor={data.id} className="col-sm-2 col-form-label text-center">{data.author.nickname}</label>
                     <div className="col-sm-8 comment">
                             <p>{data.comment}</p>
                             <p>{moment(data.created_at).format('YYYY-MM-DD HH:MM')}</p>
+                        {data.author.id===userId
+                        ?(  <div>
+                                <button className="my-btn" onClick={()=>{deleteComment(data.id)}}>삭제</button>
+                                <button className="my-btn" onClick={()=>{toggleModal(data.id)}}>수정</button>
+                            </div>)
+                        :null
+                        }
                     </div>
+                    
+                    {modalOpen[data.id] && <EditCommetModal closeModal={toggleModal}
+                                                commentId={data.id} comment={data.comment}/>}
                 </div>
             ))}
             <CommentPageButton count={count} next={next} previous={previous} setComments={setComments}></CommentPageButton>
@@ -188,6 +221,14 @@ const PostDetailAPI = ()=>{
         }})
     }
 
+    const deletePost = ()=>{
+        axios.delete(`/post/${postId}`,
+            {headers:{Authorization:`Bearer ${accessToken}`}})
+        .then(response=>{if(response.status ===204){
+            navigate('/');
+            alert('삭제 완료');
+        }})
+    }
     useEffect(()=>{
         if(accessToken===null){
             navigate('/login');
@@ -229,7 +270,12 @@ const PostDetailAPI = ()=>{
                                 <InputBox readOnly={true} name="postTitleInput" value={title} labelName="제목"/>
                                 <textarea className="form-control" rows={5} value={content} readOnly/>
                             </div>
-                            {userId === author? <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                            {userId === author
+                            ?(  <div>
+                                    <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
+                                    <button className="my-btn" onClick={()=>{deletePost()}}>삭제하기</button>
+                                </div>
+                            ) 
                             : (!checkLike ?<button className="my-btn" onClick={()=>{pushLike(postId)}}>좋아요</button>
                                     :<button className="my-btn" onClick={()=>{pushLike(postId)}}>좋아요 취소</button>)}
                             </div>
