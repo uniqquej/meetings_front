@@ -44,9 +44,15 @@ const PostAPI = ()=>{
     userId = checkToken(accessToken)
 
     const searchKeyword = async(keyword)=>{
-        let params = {search:keyword, category:category}
-        const res = await axios.get(`/post/`,
-        {params});
+        let config = {
+            headers:{Authorization:`Bearer ${accessToken}`},
+            params:{
+                category:category,
+                search:keyword
+            }
+        }
+        const res = await axios.get(`/post/`,config);
+
         if (res.status === 200){
             setData([...res.data.results]);
         }

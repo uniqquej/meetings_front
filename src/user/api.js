@@ -51,13 +51,19 @@ const LoginPage = ()=>{
         login(PhoneNumber, Password)
     }
 
+    const handleOnKeyPress = e => {
+        if (e.key === 'Enter') {
+            login(PhoneNumber, Password); // Enter 입력이 되면 클릭 이벤트 실행
+        }
+      };
+
     return(
         <div className="inputBox">
             <h3>로그인</h3>
             <input className="form-control" type="text" value={PhoneNumber} 
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
             <input className="form-control" type="password" value={Password} 
-            onChange={onPasswordHandler} placeholder="password"/>
+            onChange={onPasswordHandler} placeholder="password" onKeyDown={handleOnKeyPress}/>
             <button className="btn btn-dark" onClick={onLogin}>로그인</button>
             <button className="btn btn-dark" onClick={()=>{navigate('/auth')}}>회원 가입</button>
         </div>
