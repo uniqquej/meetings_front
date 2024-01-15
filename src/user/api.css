@@ -12,3 +12,6 @@
 .inputBox>button{
     margin-top: 15px;
 }
+.errorMsg{
+    color: red;
+}
