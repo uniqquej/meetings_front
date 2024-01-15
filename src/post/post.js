@@ -129,8 +129,11 @@ const Comments = (probs)=>{
     const onCommentHandler = (event)=>{
         setComment(event.currentTarget.value)
     }
+    const config = {
+        headers:{Authorization:`Bearer ${accessToken}`}
+    }
     useEffect(()=>{
-        axios.get(`/post/${probs.postId}/comment`,{headers:{Authorization:`Bearer ${accessToken}`}})
+        axios.get(`/post/${probs.postId}/comment`,config)
             .then(response=>{
                 console.log('comment',response)
                 setComments([...response.data.results])

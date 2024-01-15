@@ -3,10 +3,10 @@ import axios from "axios"
 import { useParams } from "react-router-dom";
 
 const CommentPageButton = (props)=>{
+    const accessToken = localStorage.getItem("access");
     const pageSize = 5;
     const {count, next, previous, setComments} = props;
     const {postId} = useParams();
- 
     const pageNumber = (count%pageSize)!=0? Math.floor(count/pageSize)+1 :(count/pageSize);
     const [currentPage, setCurruntPage] = useState(1);
     const [startPageNum, setStartPageNum] = useState(1);
@@ -14,8 +14,13 @@ const CommentPageButton = (props)=>{
 
     const getComments = async(pageNum)=>{
         setCurruntPage(pageNum);
-        let params = {page:pageNum};
-        let res = await axios.get(`/post/${postId}/comment`,{params});
+        let config = {
+            headers:{Authorization:`Bearer ${accessToken}`},
+            params:{
+                page:pageNum
+            }
+        }
+        let res = await axios.get(`/post/${postId}/comment`,config);
         console.log("comment",res.data);
         if(res.status == 200){
             setComments(res.data.results);

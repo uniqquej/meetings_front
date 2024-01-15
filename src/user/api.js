@@ -15,6 +15,7 @@ const LoginPage = ()=>{
 
     const [PhoneNumber, setPhoneNumber] = useState("");
     const [Password, setPassword] = useState("");
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const onPhoneNumberHandler = (event) => {
         setPhoneNumber(event.currentTarget.value);
@@ -44,7 +45,10 @@ const LoginPage = ()=>{
                     navigate("/");
                 }
             }
-        ).catch(error=>{console.log(error)})
+        ).catch(error=>{
+            setErrorMessage(error.response.data.msg);
+            console.log("error:",error.response.data)
+        })
     }
 
     const onLogin = ()=>{
@@ -64,6 +68,10 @@ const LoginPage = ()=>{
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
             <input className="form-control" type="password" value={Password} 
             onChange={onPasswordHandler} placeholder="password" onKeyDown={handleOnKeyPress}/>
+            {errorMessage!=null
+                ? <div className="errorMsg">{errorMessage}</div>
+                : null
+            }
             <button className="btn btn-dark" onClick={onLogin}>로그인</button>
             <button className="btn btn-dark" onClick={()=>{navigate('/auth')}}>회원 가입</button>
         </div>
@@ -110,11 +118,18 @@ const AuthPage = ()=>{
             phone_number: PhoneNumber,
             input_number : AuthNumber
         };
-        const res = await axios.post('user/auth', userData);
-        
-        if (res.status === 200){
-            navigate(`/signup`);
-        }
+        await axios.post('user/auth', userData)
+        .then(
+            response=>{
+                if (response.status === 200){
+                    navigate(`/signup`);
+                }
+            }
+        )
+        .catch(error=>{
+            setErrorMessage(error.response.data.msg);
+            console.log(error.response.data);
+        })    
     }
 
     const onCheckAuthNumber = ()=>{
@@ -124,7 +139,7 @@ const AuthPage = ()=>{
     return(
         <div className="inputBox">
             <h3>인증번호 확인</h3>
-            {errorMessage!==null ? <span style={{color:"skyblue"}}>{errorMessage}</span>
+            {errorMessage!==null ? <span className="errorMsg">{errorMessage}</span>
                                 :<></>}
             <input className="form-control" type="text" value={PhoneNumber} 
             onChange={onPhoneNumberHandler} placeholder="phone number"/>
@@ -137,8 +152,6 @@ const AuthPage = ()=>{
             {
                 IsSmsSended && (
                 <>
-                { errorMessage!==null ? <span style={{color:"skyblue"}}>{errorMessage}</span>
-                    :<></>}
                 <button className="btn btn-dark" onClick={onCheckAuthNumber}>인증번호 확인</button>
                 </>)
             }
@@ -180,10 +193,20 @@ const SignupPage = ()=>{
             password: Password,
             password2: Password2
         }
-        const res = await axios.put('/user/signup', body);
-        if (res.status===200){
-            navigate('/login');
-        }
+        await axios.put('/user/signup', body)
+        .then(
+            response=>{
+                console.log(response.data)
+                if (response.status===200){
+                    navigate('/login');
+                }
+            }
+        )
+        .catch(error=>{
+            console.log(error.response.data);
+            alert(error.response.data.error.non_field_errors);
+        })
+        
     }
 
     const onSignup = ()=>{
