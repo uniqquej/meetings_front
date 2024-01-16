@@ -262,8 +262,8 @@ const PostDetailAPI = ()=>{
 
     return (
         <div className="post-detail">
-            {
-                editMode? (<div className="text-center" >
+            <button className="my-btn" onClick={()=>{navigate(-1)}}>뒤로가기</button>
+                {editMode? (<div className="text-center" >
                             <div>
                                 <InputBox readOnly={false} name="titleInput" onChange={onTitleHandler} value={title} labelName="제목"/>
                                 <textarea className="form-control" rows={5} value={content} onChange={onContentHandler}/>

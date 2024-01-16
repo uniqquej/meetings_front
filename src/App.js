@@ -5,7 +5,7 @@ import {Layout} from './components/frame';
 import {LoginPage, AuthPage, SignupPage} from './user/api';
 import {PostAPI, PostDetailAPI, NewPostAPI} from './post/post';
 import {RecruitmentAPI, RecruitmentDetailAPI, NewRecruitmentAPI} from './post/recruitment';
-import {ProfilePostAPI } from './post/profilePost';
+import {ProfilePostAPI,RecruitPageLeaderMode } from './post/profilePost';
 import {GroupDetail, CreateGroup} from './group/group';
 import {MyToDoList} from './group/toDoList'
 import { Socket } from './chat/chat';
@@ -61,6 +61,11 @@ function App() {
             <Route path='/recruit/:recruitId' element={
               <Layout>
                 <RecruitmentDetailAPI/>
+              </Layout>
+            }/>
+            <Route path='/recruit/:recruitId/leader' element={
+              <Layout>
+                <RecruitPageLeaderMode/>
               </Layout>
             }/>
           <Route path='/group/:groupId' element={
