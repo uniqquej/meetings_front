@@ -87,19 +87,19 @@ const RecruitmentDetailAPI = ()=>{
     const navigate = useNavigate();
     const {recruitId} = useParams();
     const [categoryName, setCategoryName]= useState("");
-    const [categoryId, setCategoryId]= useState("");
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [numberOfRecruits, setNumberOfRecruits] = useState("");
+    const [checkMember, setCheckMember] = useState([]);
     const [groupName, setGroupName] = useState("");
     const [checkApplicate, setCheckApplicate] = useState(false);
 
     useEffect(()=>{
         axios.get(`/recruit/${recruitId}`).then(
             response => {
-                console.log(response)
+                console.log(response.data)
+                setCheckMember(response.data.group.member.includes(userId));
                 setCategoryName(response.data.category.category_name);
-                setCategoryId(response.data.category.id);
                 setGroupName(response.data.group.group_name);
                 setNumberOfRecruits(response.data.number_of_recruits);
                 setTitle(response.data.title);
@@ -109,7 +109,7 @@ const RecruitmentDetailAPI = ()=>{
         ).catch(error=>{
             console.error('error: ', error)
         })
-    },[]);
+    },[recruitId]);
 
     const applyRecruitment = async()=>{
         const res = await axios.post(`/recruit/${recruitId}/applicate`,{},{
@@ -132,7 +132,10 @@ const RecruitmentDetailAPI = ()=>{
                     <InputBox readOnly={true} name="titleInput" value={title} labelName="제목"/>
                     <textarea className="form-control" value={content}  rows={10} readOnly/>
                     {!checkApplicate
-                        ?<button className="my-btn" onClick={applyRecruitment}>지원 하기</button>
+                        ?(!checkMember
+                            ?<button className="my-btn" onClick={applyRecruitment}>지원 하기</button>
+                            :<button className="my-btn-disabled" onClick={applyRecruitment} disabled>이 그룹의 멤버입니다.</button>
+                        )
                         :<button className="my-btn" onClick={applyRecruitment}>지원 완료</button>}
                 </div>
         </div>

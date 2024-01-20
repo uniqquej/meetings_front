@@ -62,7 +62,12 @@ a{
     
 }
 
-.recruit-leader-left,.recruit-leader-right{
-    margin-left: 5px;
-    width: 45%;
+.recruit-leader-left{
+    margin: auto 5px;
+    width: 60%;
+}
+.recruit-leader-right{
+    margin: auto 0;
+    width: 35%;
+    overflow-x: auto;
 }

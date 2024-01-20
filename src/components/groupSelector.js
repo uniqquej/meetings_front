@@ -8,7 +8,7 @@ const GroupSelector = ({onSelect})=>{
     const [group, setGroup]=useState("");
 
     useEffect(()=>
-        {axios.get('/group/', {headers:{
+        {axios.get('/group/leader', {headers:{
             Authorization:`Bearer ${accessToken}`}})
         .then(response=>{
             setGroups([...response.data]);

@@ -140,7 +140,8 @@ const RecruitPageLeaderMode = ()=>{
         <>
         <div className="post-detail-leader">
                { editMode ? (
-                   <div className="text-center recruit-leader">
+                <div className="text-center recruit-leader-left">
+                    <h3><b>모집 공고</b></h3>
                     <SelectBox onSelect={onCategorySelector} props={{category:categoryId}}/>
                     <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" onChange={onNumberOfRecruitsHandler}/>
@@ -153,6 +154,7 @@ const RecruitPageLeaderMode = ()=>{
                 </div>
                 ):
                 (<div className="text-center recruit-leader-left">
+                    <h3><b>모집 공고</b></h3>
                     <InputBox readOnly={true} name="categoryInput" value={categoryName} labelName="카테고리"/>
                     <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={true} name="numberInput" value={numberOfRecruits} labelName="모집 인원"/>
@@ -174,7 +176,7 @@ const RecruitPageLeaderMode = ()=>{
                             <div key={applicant.id}>
                                 <p>{applicant.nickname!=='' ?applicant.nickname :"unknown"}</p>
                                 { group.member.includes(applicant.id) 
-                                ?<button className="my-btn-diabled" onClick={()=>{acceptApplicant(applicant.id)}} disabled>완료</button>
+                                ?<button className="my-btn-disabled" onClick={()=>{acceptApplicant(applicant.id)}} disabled>완료</button>
                                 :<button className="my-btn" onClick={()=>{acceptApplicant(applicant.id)}}>수락</button>
                                 }
                             </div>
