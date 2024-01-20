@@ -66,13 +66,13 @@ const RecruitPageLeaderMode = ()=>{
     const {recruitId} = useParams();
     const [categoryName, setCategoryName]= useState("");
     const [categoryId, setCategoryId]= useState("");
+    const [group, setGroup]= useState([]);
     const [title, setTitle] = useState("");
     const [content, setContent] = useState("");
     const [numberOfRecruits, setNumberOfRecruits] = useState("");
     const [groupName, setGroupName] = useState("");
     const [editMode, setEditMode] = useState(false);
-    const [author, setAuthor] = useState("");
-    const [checkApplicate, setCheckApplicate] = useState(false);
+    const [applicants, setApplicants] = useState([]);
 
     const onTitlHandler = (event) => {
         setTitle(event.currentTarget.value);
@@ -92,14 +92,14 @@ const RecruitPageLeaderMode = ()=>{
         axios.get(`/recruit/${recruitId}`).then(
             response => {
                 console.log(response)
+                setGroup(response.data.group)
                 setCategoryName(response.data.category.category_name);
                 setCategoryId(response.data.category.id);
                 setGroupName(response.data.group.group_name);
                 setNumberOfRecruits(response.data.number_of_recruits);
                 setTitle(response.data.title);
                 setContent(response.data.content);
-                setAuthor(response.data.author.id);
-                setCheckApplicate(response.data.applicant.includes(userId));
+                setApplicants(response.data.applicant);
             }
         ).catch(error=>{
             console.error('error: ', error)
@@ -123,15 +123,24 @@ const RecruitPageLeaderMode = ()=>{
         })
 
         if(res.status===204){
-            navigate('/recruit')
+            navigate('/recruit');
+            window.location.reload();
+        }
+    }
+    const acceptApplicant = async(applicantId)=>{
+        const res = await axios.post(`/group/accept/${group.id}/${applicantId}`,{
+            headers : {Authorization:`Bearer ${accessToken}`}
+        })
+        if(res.status===201){
+            alert("수락 완료");
+            window.location.reload();
         }
     }
     return(
         <>
-        <div className="post-detail">
-            <button className="my-btn" onClick={()=>{navigate(-1);}}>이전 페이지</button>
+        <div className="post-detail-leader">
                { editMode ? (
-                   <div className="text-center">
+                   <div className="text-center recruit-leader">
                     <SelectBox onSelect={onCategorySelector} props={{category:categoryId}}/>
                     <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={false} name="numberInput" value={numberOfRecruits} labelName="모집 인원" onChange={onNumberOfRecruitsHandler}/>
@@ -143,19 +152,35 @@ const RecruitPageLeaderMode = ()=>{
                         }}>저장하기</button>
                 </div>
                 ):
-                (<div className="text-center">
+                (<div className="text-center recruit-leader-left">
                     <InputBox readOnly={true} name="categoryInput" value={categoryName} labelName="카테고리"/>
                     <InputBox readOnly={true} name="groupInput" value={groupName} labelName="모임 이름"/>
                     <InputBox readOnly={true} name="numberInput" value={numberOfRecruits} labelName="모집 인원"/>
                     <InputBox readOnly={true} name="titleInput" value={title} labelName="제목"/>
                     <textarea className="form-control" value={content}  rows={10} readOnly/>
                     <div>
+                        <button className="my-btn" onClick={()=>{navigate(-1);}}>이전 페이지</button>
                         <button className="my-btn" onClick={()=>{setEditMode(true)}}>수정하기</button>
                         <button className="my-btn" onClick={()=>{deleteRecruitment(recruitId)}}>삭제하기</button>
                     </div>
                     
                 </div>
                 )}
+                <div className="text-center recruit-leader-right">
+                    <h3><b>지원자 목록</b></h3>
+                    <h4>{applicants.length+'명'}</h4>
+                    {
+                        applicants.map(applicant=>(
+                            <div key={applicant.id}>
+                                <p>{applicant.nickname!=='' ?applicant.nickname :"unknown"}</p>
+                                { group.member.includes(applicant.id) 
+                                ?<button className="my-btn-diabled" onClick={()=>{acceptApplicant(applicant.id)}} disabled>완료</button>
+                                :<button className="my-btn" onClick={()=>{acceptApplicant(applicant.id)}}>수락</button>
+                                }
+                            </div>
+                        ))
+                    }
+                </div>
         </div>
         </>
     )

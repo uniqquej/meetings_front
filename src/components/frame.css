@@ -91,13 +91,19 @@
     border-radius: 5px;
     background-color: #282c34;
     color: white;
-    margin: 8px 5px;
+    margin: 5px 5px;
   }
 
   .my-btn:hover{
     background-color:white;
     border: none;
     color: #282c34;
+  }
+  .my-btn-diabled{
+    border-radius: 5px;
+    background-color: white;
+    color: #282c34;
+    margin: 5px 5px;
   }
 
   .my-modal{

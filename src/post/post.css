@@ -31,6 +31,15 @@ a{
     height: 100%;
 }
 
+.post-detail-leader{
+    padding: 10px;
+    background-color: white;
+    color: black;
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
 .post-detail>div>input{
     margin-top: 5px;
     margin-bottom: 5px;
@@ -51,4 +60,9 @@ a{
     padding: 5px;
     text-align: center;
     
+}
+
+.recruit-leader-left,.recruit-leader-right{
+    margin-left: 5px;
+    width: 45%;
 }
